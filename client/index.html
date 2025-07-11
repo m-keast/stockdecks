@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockDecks</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <ul class="nav-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">My Deck</a></li>
+            <li><a href="more.html">Buy Packs</a></li>
+        </ul>
+        <div class="nav-login">
+            <a href="login.html" class="login-button">Log out</a>
+        </div>
+    </nav>
+
+    <div class="content">
+        <h1>Stock Decks</h1>
+
+        <!-- Carousel for all of the stock cards -->
+        <div class="carousel-container">
+            <button class="arrow left" onclick="scrollCardsLeft()">&lt;</button>
+            <div class="card-list" id="cardList">
+                <!-- Example card structure -->
+                <div class="card">
+                    <div class="card-header">
+                    <span class="abbr">AAPL</span>
+                    <span class="top-number">4</span>
+                    </div>
+                    <img src="https://bpb-us-w2.wpmucdn.com/u.osu.edu/dist/6/44792/files/2017/04/stock-market-3-21gyd1b.jpg" alt="Image" class="card-image" />
+                    <div class="card-info">
+                    <span class="title">Apple</span>
+                    <span class="info-number">$209.56</span>
+                    </div>
+                    <p class="description">Apple Inc. is an American multinational corporation and technology company headquartered in Cupertino, California, in Silicon Valley.</p>
+                </div>
+                                <!-- Duplicate for more cards -->
+                <div class="card">
+                    <div class="card-header">
+                    <span class="abbr">MSFT</span>
+                    <span class="top-number">1</span>
+                    </div>
+                    <img src="https://bpb-us-w2.wpmucdn.com/u.osu.edu/dist/6/44792/files/2017/04/stock-market-3-21gyd1b.jpg" alt="Image" class="card-image" />
+                    <div class="card-info">
+                    <span class="title">Microsoft</span>
+                    <span class="info-number">$495.52</span>
+                    </div>
+                    <p class="description">Microsoft Corporation is an American multinational corporation and technology conglomerate</p>
+                </div>
+                                <!-- Duplicate for more cards -->
+                <div class="card">
+                    <div class="card-header">
+                    <span class="abbr">MSFT</span>
+                    <span class="top-number">1</span>
+                    </div>
+                    <img src="https://bpb-us-w2.wpmucdn.com/u.osu.edu/dist/6/44792/files/2017/04/stock-market-3-21gyd1b.jpg" alt="Image" class="card-image" />
+                    <div class="card-info">
+                    <span class="title">Microsoft</span>
+                    <span class="info-number">$495.52</span>
+                    </div>
+                    <p class="description">Microsoft Corporation is an American multinational corporation and technology conglomerate</p>
+                </div>
+                <!-- Add more cards as needed -->
+            </div>
+            <button class="arrow right" onclick="scrollCardsRight()">&gt;</button>
+        </div>
+    </div>
+    <button onclick="getThreePack()">Click to generate 3 pack</button>
+
+
+    <div class="carousel-container">
+            <button class="arrow left" onclick="scrollCardsLeft()">&lt;</button>
+            <div class="card-list" id="cardList">
+                <!-- Example card structure -->
+                <div class="card">
+                    <div class="card-header">
+                    <span class="abbr" id="abbr1">AAPL</span>
+                    <span class="top-number">4</span>
+                    </div>
+                    <img src="https://bpb-us-w2.wpmucdn.com/u.osu.edu/dist/6/44792/files/2017/04/stock-market-3-21gyd1b.jpg" alt="Image" class="card-image" />
+                    <div class="card-info">
+                    <span class="title" id="stockname1">Apple</span>
+                    <span class="info-number" id="price1">$209.56</span>
+                    </div>
+                    <p class="description">Apple Inc. is an American multinational corporation and technology company headquartered in Cupertino, California, in Silicon Valley.</p>
+                </div>
+
+                <!-- Duplicate for more cards -->
+                <div class="card">
+                    <div class="card-header">
+                    <span class="abbr" id="abbr2">MSFT</span>
+                    <span class="top-number">1</span>
+                    </div>
+                    <img src="https://bpb-us-w2.wpmucdn.com/u.osu.edu/dist/6/44792/files/2017/04/stock-market-3-21gyd1b.jpg" alt="Image" class="card-image" />
+                    <div class="card-info">
+                    <span class="title" id="stockname2">Microsoft</span>
+                    <span class="info-number" id="price2">$495.52</span>
+                    </div>
+                    <p class="description">Microsoft Corporation is an American multinational corporation and technology conglomerate</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                    <span class="abbr" id="abbr3">MSFT</span>
+                    <span class="top-number">1</span>
+                    </div>
+                    <img src="https://bpb-us-w2.wpmucdn.com/u.osu.edu/dist/6/44792/files/2017/04/stock-market-3-21gyd1b.jpg" alt="Image" class="card-image" />
+                    <div class="card-info">
+                    <span class="info-number" id="price3">$495.52</span>
+                    </div>
+                    <span class="title" id="stockname3">Microsoft</span>
+                    <p class="description">Microsoft Corporation is an American multinational corporation and technology conglomerate</p>
+                </div>
+                <!-- Add more cards as needed -->
+            </div>
+            <button class="arrow right" onclick="scrollCardsRight()">&gt;</button>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+
+
+</body>
+</html>
