@@ -42,22 +42,25 @@ app.get('/api/price/:symbol', async (req, res) => {
 });
 
 
-// Route to return 1 random stock symbol
-app.get('/api/random-symbol', async (req, res) => {
+// GET STOCK DATA FROM CSV Route
+app.get('/api/random-stock', async (req, res) => {
   const results = [];
 
-  fs.createReadStream('nasdaq-listed-symbols.csv')
+  fs.createReadStream('ticker_data.csv')
     .pipe(csv())
     .on('data', (data) => {
-      const symbol = data[Object.keys(data)[0]]; // first column
-      if (symbol) results.push(symbol);
+        const symbol = data[Object.keys(data)[0]];
+        const stockname = data[Object.keys(data)[1]];
+        const sector = data[Object.keys(data)[9]];
+        const description = data[Object.keys(data)[11]];
+      if (symbol && stockname && sector && description) results.push({ symbol, stockname, sector, description });
     })
     .on('end', () => {
       if (results.length === 0) {
         return res.status(500).json({ error: 'No symbols found' });
       }
       const randomIndex = Math.floor(Math.random() * results.length);
-      res.json({ symbol: results[randomIndex] });
+      res.json({ stockdata: results[randomIndex] });
     })
     .on('error', (err) => {
       console.error('CSV read error:', err);
