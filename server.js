@@ -68,6 +68,19 @@ app.get('/api/random-stock', async (req, res) => {
     });
 });
 
+app.get('/api/userdeck', async (req, res) => {
+  try {
+    const data = await getUserDeck();
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: 'No user deck found' });
+    }
+    res.json(data);
+  } catch (err) {
+    console.error('Error fetching user deck:', err);
+    res.status(500).json({ error: 'Failed to fetch user deck' });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
