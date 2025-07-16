@@ -1,7 +1,10 @@
 import { loadCards } from './storage.js';
 import { getCard, getSectorColor } from './index.js';
 
+let userCards = null;
+
 function renderCards(cards) {
+  console.log('Rendering cards');
   const container = document.getElementById('card-container');
 
   if (!container) return;
@@ -26,7 +29,7 @@ function renderCards(cards) {
       <span class="abbr" id="abbr1">${card.symbol}</span>
       <span class="top-number">1</span>
       </div>
-      <img src="https://bpb-us-w2.wpmucdn.com/u.osu.edu/dist/6/44792/files/2017/04/stock-market-3-21gyd1b.jpg" alt="Image" class="card-image" />
+      <img src="${card.imgurl}" alt="Image" class="card-image" />
       <div class="card-info">
       <span class="sector" id="sector1">${card.sector}</span>
       <span class="info-number" id="price1">$${card.price.toFixed(2)}</span>
@@ -44,14 +47,13 @@ async function getNewCard() {
   } catch (err) {
     console.error('Failed to get new stock card:', err);
   }
+  renderCards(userCards);
 }
-
-
 
 // Only run when the DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
   const newCardButton = document.getElementById('newCardButton');
-  const userCards = loadCards();
+  userCards = loadCards();
   renderCards(userCards);
 
   newCardButton.addEventListener('click', getNewCard);

@@ -39,6 +39,7 @@ export async function getCard() {
     const name = stock.stockname;
     const sector = stock.sector;
     const description = stock.description;
+    const imgurl = stock.imgurl;
     const price = await getPrice(symbol);
 
     const newCard = {
@@ -48,6 +49,7 @@ export async function getCard() {
       sector: sector,
       price: parseFloat(price),
       description: description,
+      imgurl: imgurl,
       dateAcquired: new Date().toISOString(),
     };
 

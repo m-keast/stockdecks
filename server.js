@@ -46,14 +46,15 @@ app.get('/api/price/:symbol', async (req, res) => {
 app.get('/api/random-stock', async (req, res) => {
   const results = [];
 
-  fs.createReadStream('ticker_data.csv')
+  fs.createReadStream('companies.csv')
     .pipe(csv())
     .on('data', (data) => {
         const symbol = data[Object.keys(data)[0]];
         const stockname = data[Object.keys(data)[1]];
-        const sector = data[Object.keys(data)[9]];
-        const description = data[Object.keys(data)[11]];
-      if (symbol && stockname && sector && description) results.push({ symbol, stockname, sector, description });
+        const sector = data[Object.keys(data)[10]];
+        const description = data[Object.keys(data)[12]];
+        const imgurl = data[Object.keys(data)[13]];
+      if (symbol && stockname && sector && description && imgurl) results.push({ symbol, stockname, sector, description, imgurl });
     })
     .on('end', () => {
       if (results.length === 0) {
