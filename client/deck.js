@@ -34,7 +34,7 @@ function renderCards(cards) {
       <span class="sector" id="sector1">${card.sector}</span>
       <span class="info-number" id="price1">$${card.price.toFixed(2)}</span>
       </div>
-      <span class="title" id="stockname1">${card.name}</span>
+      <div class="title" id="stockname1">${card.name}</div>
       <p class="description" id="description1">${card.description}</p>
     `;
     container.appendChild(cardDiv);
