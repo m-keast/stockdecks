@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node server.js",
+    "start": "node dist/server.js",
     "br": "npm run build && npm run start"
   },
   "keywords": [],
@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.10",
+    "@types/express": "^5.0.3",
     "typescript": "^5.8.3"
   }
 }
