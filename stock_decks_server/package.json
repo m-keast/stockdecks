@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "build": "tsc",
+    "start": "node server.js",
+    "br": "npm run build && npm run start"
   },
   "keywords": [],
   "author": "",
@@ -12,5 +14,9 @@
   "description": "",
   "dependencies": {
     "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.10",
+    "typescript": "^5.8.3"
   }
 }

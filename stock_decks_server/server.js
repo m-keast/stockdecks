@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-app.use(express.static('src'));
+app.use(express.static('dist'));
 
 app.get('/data', (req, res) => {
   const data = { message: 'Hello from the server!' };
