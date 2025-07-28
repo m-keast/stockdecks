@@ -1,0 +1,235 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Centering container */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+/* Sign-in box styling */
+.signin-box {
+  background: white;
+  margin-top: 60px;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Heading */
+.signin-box h2 {
+  margin-bottom: 24px;
+  color: #333;
+}
+
+/* Input fields */
+.signin-box input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+
+/* Navbar */
+.navbar {
+  background-color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 1000;
+}
+
+/* Left menu */
+.nav-menu {
+  display: flex;
+  list-style: none;
+}
+
+.nav-menu li {
+  margin-right: 15px;
+}
+
+.nav-menu li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 14px 10px;
+  display: block;
+}
+
+.nav-menu li a:hover {
+  background-color: #575757;
+  border-radius: 4px;
+}
+
+/* Right Menu */
+.nav-login .login-button {
+  color: white;
+  background-color: #007bff;
+  padding: 10px 16px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+
+.nav-login .login-button:hover {
+  background-color: #0056b3;
+}
+
+.content {
+  padding: 80px 20px;
+  font-family: sans-serif;
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
+    margin: 0;
+}
+
+p {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
+    font-size: 50px;
+    color: blueviolet;
+    margin: 0;
+    padding: 20px;
+}
+
+.carousel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 8px;
+  padding: 8px;
+}
+
+.card-list {
+  display: flex;
+  overflow-x: auto;
+  gap: 16px;
+  padding: 16px;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.card-list::-webkit-scrollbar {
+  display: none; 
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  border: 5px solid transparent;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 220px;
+  flex-shrink: 0;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.card:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+  box-shadow: #5b5b5b 0px 0px 10px 2px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.card-image {
+  width: 100%;            /* Scale to full width of container */
+  height: auto;           /* Maintain aspect ratio */
+  max-height: 150px;      /* Optional: limit height if needed */
+  object-fit: contain;    /* Ensures full image is visible without cropping */
+  display: block;         /* Remove bottom whitespace */
+  margin: 0 auto;         /* Center image horizontally */
+}
+
+.card-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.description {
+  font-size: 12px;
+  color: #555;
+  text-align: left;
+}
+
+/* Arrow buttons */
+.arrow {
+  background: #007bff;
+  color: white;
+  border: none;
+  font-size: 24px;
+  padding: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: 0 8px;
+  transition: background 0.3s ease;
+}
+.arrow:hover {
+  background: #0056b3;
+}
