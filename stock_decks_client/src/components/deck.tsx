@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { loadCards } from '../lib/storage';
 import { getSectorColor } from '../lib/cardstyle'; // Adjust paths as needed
 import { getCard } from '../lib/cards';
+import Image from 'next/image';
 
 type Card = {
   symbol: string;
@@ -55,7 +56,7 @@ export default function Deck() {
                   <span className="abbr">{card.symbol}</span>
                   <span className="top-number">1</span>
                 </div>
-                <img src={card.imgurl} alt="Image" className="card-image" />
+                <Image src={card.imgurl} alt="Image" className="card-image" />
                 <div className="card-info">
                   <span className="sector">{card.sector}</span>
                   <span className="info-number">${card.price.toFixed(2)}</span>
