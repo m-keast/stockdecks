@@ -1,7 +1,12 @@
 // src/lib/cards.ts
+// Handles card creation and management
+
+
 import { addCard } from './storage';
 import { getPrice, getRandomStockData } from './stocks';
 
+
+// Data structure for a card object
 export type Card = {
   id: string;
   symbol: string;
@@ -13,6 +18,8 @@ export type Card = {
   dateAcquired: string;
 };
 
+
+// Creates and returns a new card with stock data
 export async function getCard(): Promise<Card | null> {
   try {
     const stock = await getRandomStockData();
