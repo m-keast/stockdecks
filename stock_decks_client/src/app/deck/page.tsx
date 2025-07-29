@@ -2,13 +2,9 @@
 "use client";
 
 import Head from 'next/head'
-import { useEffect } from 'react'
+import Deck from '../../components/deck';
 
 export default function Home() {
-  useEffect(() => {
-    import('../../components/deck');
-  }, [])
-
   return (
     <>
       <Head>
@@ -20,9 +16,8 @@ export default function Home() {
 
       <div className="content">
         <h1>Stock Decks</h1>
-        <button id="newCardButton">Click to generate new card</button>
-        <h2>Your Cards</h2>
         <div id="card-container"></div>
+        <Deck /> {/* This now handles rendering and refreshing */}
       </div>
     </>
   )

@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { symbol: string } }
-) {
-  const { symbol } = params;
+type ParamsContext = {
+  params: {
+    symbol: string;
+  };
+};
+
+export async function GET(_request: NextRequest, context: unknown) {
+  const { symbol } = (context as ParamsContext).params;
   const apiKey = process.env.TWELVE_DATA_API_KEY;
 
   if (!apiKey) {
@@ -12,8 +15,11 @@ export async function GET(
   }
 
   try {
-    const res = await fetch(`https://api.twelvedata.com/price?symbol=${symbol}&apikey=${apiKey}`);
+    const res = await fetch(
+      `https://api.twelvedata.com/price?symbol=${symbol}&apikey=${apiKey}`
+    );
     const data = await res.json();
+
     return NextResponse.json({ price: data.price });
   } catch (err) {
     console.error('Price API error:', err);

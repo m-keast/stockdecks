@@ -2,7 +2,7 @@
 
 import { Card } from './cards';
 
-const STORAGE_KEY = 'cards';
+const STORAGE_KEY = 'userCards';
 
 export function loadCards(): Card[] {
   if (typeof window === 'undefined') return []; // SSR safety
