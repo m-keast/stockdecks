@@ -1,11 +1,6 @@
-<<<<<<< Updated upstream
-// app/page.tsx (or any page/component in your Next.js project)
-=======
 // Home Page
 
-
 import Link from 'next/link';
->>>>>>> Stashed changes
 import Image from 'next/image'; 
 
 

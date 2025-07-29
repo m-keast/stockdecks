@@ -1,10 +1,5 @@
-// pages/index.tsx
-<<<<<<< Updated upstream
-//"use client";
-=======
 // Page for viewing deck of cards
-"use client";
->>>>>>> Stashed changes
+//"use client";
 
 import Deck from '../../components/deck';
 
