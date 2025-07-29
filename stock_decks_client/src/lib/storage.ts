@@ -19,6 +19,7 @@ export function loadCards(): Card[] {
 
 //Saves cards to localStorage
 export function saveCards(cards: Card[]): void {
+  console.log('[saveCards] saving', cards.length, 'cards');
   if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));

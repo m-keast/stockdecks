@@ -21,6 +21,7 @@ export type Card = {
 
 // Creates and returns a new card with stock data
 export async function getCard(): Promise<Card | null> {
+  console.log('[getCard] called');
   try {
     const stock = await getRandomStockData();
     if (!stock) return null;
