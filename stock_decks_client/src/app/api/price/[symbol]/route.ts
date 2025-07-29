@@ -1,3 +1,6 @@
+// API route for fetching stock price by symbol
+// Uses twelvedata API for stock prices
+
 import { NextRequest, NextResponse } from 'next/server';
 
 type ParamsContext = {

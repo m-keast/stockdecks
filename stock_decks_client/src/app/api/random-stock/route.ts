@@ -1,3 +1,5 @@
+// API route to fetch a random stock
+
 import { NextResponse } from 'next/server';
 import { readRandomStock } from '@/lib/readCsv';
 
