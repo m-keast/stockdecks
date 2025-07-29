@@ -1,4 +1,5 @@
 // src/lib/stocks.ts
+// Handles API calls for getting stock data
 
 export async function getRandomStockData() {
   try {

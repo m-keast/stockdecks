@@ -1,3 +1,5 @@
+// Page for opening a pack of cards
+
 'use client';
 
 import { useEffect, useState } from 'react';

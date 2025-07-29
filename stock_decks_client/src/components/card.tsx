@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { getSectorColor } from '../lib/cardstyle';
 import { Card } from '../lib/cards'; // <-- Import shared Card type
 
+
+// Extra card properties for display
 type CardProps = {
   card: Card;                       // Use shared type
   className?: string;               // For stacking/fanning in pack opening

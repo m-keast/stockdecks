@@ -1,9 +1,11 @@
 // src/lib/storage.ts
+//Handles loading and saving cards to localStorage
 
 import { Card } from './cards';
 
 const STORAGE_KEY = 'userCards';
 
+//Loads cards from localStorage
 export function loadCards(): Card[] {
   if (typeof window === 'undefined') return []; // SSR safety
   const stored = localStorage.getItem(STORAGE_KEY);
@@ -15,6 +17,7 @@ export function loadCards(): Card[] {
   }
 }
 
+//Saves cards to localStorage
 export function saveCards(cards: Card[]): void {
   if (typeof window === 'undefined') return;
   try {
@@ -24,6 +27,7 @@ export function saveCards(cards: Card[]): void {
   }
 }
 
+//Adds a card parameter to localStorage
 export function addCard(card: Card): void {
   const cards = loadCards();
   cards.push(card);

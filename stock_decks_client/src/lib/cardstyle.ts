@@ -1,5 +1,7 @@
 // src/lib/colors.ts
+// Handles styling of different types of cards
 
+// Returns a color based on the stock sector
 export function getSectorColor(sector: string): [string, string] {
   switch (sector) {
     case 'Basic Materials': return ['rgba(143, 87, 57, 1)', 'rgba(238, 213, 200, 1)'];
