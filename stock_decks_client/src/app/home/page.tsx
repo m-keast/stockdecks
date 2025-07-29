@@ -1,23 +1,10 @@
 // app/page.tsx (or any page/component in your Next.js project)
-import Link from 'next/link';
 import Image from 'next/image'; 
 
 
 export default function HomePage() {
   return (
     <div>
-      <nav className="bg-zinc-700 flex justify-between items-center px-5 w-full h-15 top-0 fixed">
-        <ul className="flex list-none">
-          <li className="mr-3.5"><Link className="font-bold px-2.5 py-3.5 text-white hover:bg-zinc-500 hover:rounded-sm" href="/home">Home</Link></li>
-          <li className="mr-3.5"><Link className="font-bold px-2.5 py-3.5 text-white hover:bg-zinc-500 hover:rounded-sm" href="/deck">My Deck</Link></li>
-          <li className="mr-3.5"><Link className="font-bold px-2.5 py-3.5 text-white hover:bg-zinc-500 hover:rounded-sm" href="/buy">Buy Packs</Link></li>
-        </ul>
-        <ul className="flex list-none">
-          <li className="mr-3.5"><Link className="font-bold px-2.5 py-3.5 text-white hover:bg-zinc-500 hover:rounded-sm" href="/wallet">Wallet</Link></li>
-          <li className="mr-3.5"><Link className="font-bold px-2.5 py-3.5 text-white bg-blue-600 hover:bg-blue-800 rounded-[5px] transition-colors duration-300 ease-in-out" href="/login">Log out</Link></li>
-        </ul>
-      </nav>
-
       <div className="content">
         <h1>Stock Decks</h1>
 
