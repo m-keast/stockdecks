@@ -4,6 +4,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { savePack } from '@/lib/storage';
+
 // Example pack data (can later be loaded from API)
 const PACKS = [
   {
@@ -35,10 +37,7 @@ export default function BuyPage() {
 
   const handlePurchase = (packId: string) => {
     // Store the pack as "unopened" in localStorage
-    const unopened = JSON.parse(localStorage.getItem('unopenedPacks') || '[]');
-    unopened.push({ id: packId, timestamp: Date.now() });
-    localStorage.setItem('unopenedPacks', JSON.stringify(unopened));
-
+    savePack(packId);
     // Redirect to the pack opening page
     router.push(`/pack/${packId}`);
   };

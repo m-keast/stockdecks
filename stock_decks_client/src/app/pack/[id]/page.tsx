@@ -3,27 +3,34 @@
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { getCard } from '../../../lib/cards';
-import CardComponent from '../../../components/card'; // adjust path if needed
-import { Card } from '../../../lib/definitions'; // Import shared Card type
+import { getCard} from '../../../lib/cards';
+import type { Card } from '../../../lib/definitions';
+import CardComponent from '../../../components/card';
+import type { UnopenedPack } from '../../../components/packs';
+import { useRouter } from 'next/navigation';
 
 export default function PackOpenPage() {
+  const router = useRouter();
   const { id } = useParams<{ id: string }>();
+  const  numCards = 5  //Set up for input param later -> const { numcards } = useParams<{ numCards: int }>();
+  const [cardsRemaining, setCardsRemaining] = useState(numCards);
   const [cards, setCards] = useState<Card[]>([]);
   const [packOpened, setPackOpened] = useState(false);
   const [flipped, setFlipped] = useState<boolean[]>([]);
 
-  type UnopenedPack = {
-    id: string;
-    timestamp: number;
-  };
 
   const openPack = async () => {
 
-    const openedPacks = JSON.parse(localStorage.getItem('openedPacks') || '[]');
     const newCards: Card[] = [];
 
-    for (let i = 0; i < 5; i++) {
+    // Remove from unopened
+    const unopened: UnopenedPack[] = JSON.parse(localStorage.getItem('unopenedPacks') || '[]');
+    const remainingUnopened = unopened.filter((p) => p.id !== id);
+    localStorage.setItem('unopenedPacks', JSON.stringify(remainingUnopened));
+
+
+    // Get all the new cards and add to storage
+    for (let i = 0; i < numCards; i++) {
       try {
         console.log(`Fetching card ${i + 1}`);
         const card = await getCard();
@@ -46,14 +53,6 @@ export default function PackOpenPage() {
       }
     }
 
-    // Mark pack as opened
-    localStorage.setItem('openedPacks', JSON.stringify([...openedPacks, id]));
-
-    // Remove from unopened
-    const unopened: UnopenedPack[] = JSON.parse(localStorage.getItem('unopenedPacks') || '[]');
-    const remainingUnopened = unopened.filter((p) => p.id !== id);
-    localStorage.setItem('unopenedPacks', JSON.stringify(remainingUnopened));
-
     setCards(newCards);
     setFlipped(new Array(newCards.length).fill(false));
     setPackOpened(true);
@@ -61,8 +60,20 @@ export default function PackOpenPage() {
 
   const handleSlide = (index: number) => {
     const updated = [...flipped];
-    updated[index] = true;
-    setFlipped(updated);
+    if (!updated[index]) {
+      updated[index] = true;
+      setFlipped(updated);
+
+      setCardsRemaining(prev => {
+        const next = prev - 1;
+        console.log(`Card flipped. Remaining: ${next}`);
+        if (next <= 0) {
+          console.log('All cards revealed');
+          router.back(); // Go to previous page
+        }
+        return next;
+      });
+    }
   };
 
   return (
