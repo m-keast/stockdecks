@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { getCard, Card } from '../../../lib/cards';
+import { getCard } from '../../../lib/cards';
 import CardComponent from '../../../components/card'; // adjust path if needed
+import { Card } from '../../../lib/definitions'; // Import shared Card type
 
 export default function PackOpenPage() {
   const { id } = useParams<{ id: string }>();

@@ -1,7 +1,7 @@
 // src/lib/storage.ts
 //Handles loading and saving cards to localStorage
 
-import { Card } from './cards';
+import { Card } from '../lib/definitions';
 
 const STORAGE_KEY = 'userCards';
 

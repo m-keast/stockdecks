@@ -4,19 +4,7 @@
 
 import { addCard } from './storage';
 import { getPrice, getRandomStockData } from './stocks';
-
-
-// Data structure for a card object
-export type Card = {
-  id: string;
-  symbol: string;
-  name: string;
-  sector: string;
-  price: number;
-  description: string;
-  imgurl: string;
-  dateAcquired: string;
-};
+import type { Card } from '../lib/definitions';
 
 
 // Creates and returns a new card with stock data

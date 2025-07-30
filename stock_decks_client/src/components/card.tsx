@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { getSectorColor } from '../lib/cardstyle';
-import { Card } from '../lib/cards'; // <-- Import shared Card type
+import { Card } from '../lib/definitions'; // <-- Import shared Card type
 
 
 // Extra card properties for display
