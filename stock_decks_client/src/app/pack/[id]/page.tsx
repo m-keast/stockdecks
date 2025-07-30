@@ -118,8 +118,7 @@ export default function PackOpenPage() {
               >
                 <CardComponent
                   card={card}
-                  className="w-full h-full"
-                  showDescription={false}
+                  //className="w-full h-full"
                   isNew={true}
                 />
               </motion.div>

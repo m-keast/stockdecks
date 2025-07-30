@@ -66,5 +66,3 @@ function Pack({ id }: UnopenedPack) {
     </div>
   );
 }
-
-
