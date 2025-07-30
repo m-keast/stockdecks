@@ -1,7 +1,5 @@
 // Card component and styling
 
-'use client';
-
 import Image from 'next/image';
 import { getSectorColor } from '../lib/cardstyle';
 import { Card } from '../lib/cards'; // <-- Import shared Card type
