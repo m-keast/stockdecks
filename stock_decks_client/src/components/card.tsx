@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { getSectorColor } from '../lib/cardstyle';
 import { Card } from '../lib/definitions'; // <-- Import shared Card type
+import { motion } from 'framer-motion';
 
 
 // Extra card properties for display
@@ -26,8 +27,9 @@ export default function CardComponent({
   const [borderColor, backgroundColor] = getSectorColor(card.sector) || ['#000', '#f0f0f0'];
 
   return (
-    <div
+    <motion.div
       onClick={() => onClick?.(card)}
+      layoutId={`card-${card.id}`}
       className={`relative flex flex-col cursor-pointer justify-between rounded-xl shadow-md w-[220px] p-3 flex-shrink-0 bg-white border-[5px] hover:scale-105 hover:shadow-xl transition-transform duration-200 ease-in-out ${className || ''}`}
       style={{
         borderColor,
@@ -77,6 +79,6 @@ export default function CardComponent({
           {card.description}
         </p>
       )}
-    </div>
+    </motion.div>
   );
 }
