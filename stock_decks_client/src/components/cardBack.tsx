@@ -7,11 +7,11 @@ interface CardBackProps {
 
 export default function CardBack({ card, onClose }: CardBackProps) {
   return (
-    <div className="fixed inset-0 z-50 bg-gray-200 bg-opacity-40 backdrop-blur-sm flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg w-11/12 max-w-2xl relative shadow-lg">
+    <div onClick ={onClose} className="cursor-pointer fixed inset-0 z-10 bg-transparent backdrop-blur-sm flex items-center justify-center">
+      <div onClick={(e) => e.stopPropagation()} className=" cursor-default bg-white p-6 rounded-lg w-11/12 max-w-2xl relative shadow-lg">
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-black"
+          className="cursor-pointer absolute top-3 right-3 text-gray-500 hover:text-black"
         >
           ✕
         </button>
