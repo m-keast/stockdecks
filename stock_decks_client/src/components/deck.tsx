@@ -12,8 +12,8 @@ export default function Deck() {
   const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
 
   return (
-    <div className="deck-container relative z-10">
-      <div id="card-container" className="flex flex-wrap gap-4">
+    <div className="pt-5 deck-container relative z-10">
+      <div id="card-container" className="flex justify-center flex-wrap gap-4">
         {cards.length === 0 ? (
           <p>No cards yet.</p>
         ) : (

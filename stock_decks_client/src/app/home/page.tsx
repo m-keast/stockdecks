@@ -22,6 +22,7 @@ export default function HomePage() {
               <Image
                 src="https://bpb-us-w2.wpmucdn.com/u.osu.edu/dist/6/44792/files/2017/04/stock-market-3-21gyd1b.jpg"
                 alt="Image"
+                priority
                 className="card-image"
               />
               <div className="card-info">
