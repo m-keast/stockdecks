@@ -8,7 +8,7 @@ export function getSectorColor(sector: string): [string, string] {
     case 'Consumer Discretionary': return ['rgb(255, 111, 0)', 'rgb(255, 235, 205)'];
     case 'Consumer Staples': return ['rgb(156, 204, 101)', 'rgb(234, 247, 220)'];
     case 'Energy': return ['rgb(255, 202, 40)', 'rgb(255, 245, 200)'];
-    case 'Finance': return ['rgb(33, 37, 41)', 'rgb(220, 222, 224)'];
+    case 'Finance': return ['rgb(101, 113, 125)', 'rgb(220, 222, 224)'];
     case 'Health Care': return ['rgb(76, 175, 80)', 'rgb(220, 245, 220)'];
     case 'Industrials': return ['rgb(121, 85, 72)', 'rgb(235, 225, 220)'];
     case 'Real Estate': return ['rgb(96, 125, 139)', 'rgb(220, 230, 235)'];
