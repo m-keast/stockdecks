@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <nav className="bg-zinc-800 flex justify-between items-center px-5 w-full h-16 top-0 fixed z-50">
           <ul className="flex list-none">
             <li className="mr-3.5"><Link className="font-bold px-2.5 py-3.5 text-gray-300 hover:bg-zinc-700 hover:rounded-sm" href="/home">Home</Link></li>
