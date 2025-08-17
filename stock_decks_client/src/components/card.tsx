@@ -30,13 +30,8 @@ export default function CardComponent({
     <motion.div
       onClick={() => onClick?.(card)}
       layoutId={`card-${card.id}`}
-      className={`relative flex flex-col cursor-pointer justify-between rounded-xl shadow-md w-[220px] p-3 flex-shrink-0 bg-white border-[5px] hover:scale-105 hover:shadow-xl transition-transform duration-200 ease-in-out ${className || ''}`}
-      style={{
-        borderColor,
-        backgroundColor,
-        ...style,
-        
-      }}
+      className={`relative flex flex-col cursor-pointer justify-between rounded-xl shadow-md w-[220px] p-3 flex-shrink-0 border-[5px] hover:scale-105 hover:shadow-xl transition-transform duration-200 ease-in-out ${borderColor} ${backgroundColor}`}
+      
     >
       {/* "New" badge (optional) */}
       {isNew && (
