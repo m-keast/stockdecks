@@ -29,9 +29,11 @@ export default function CardComponent({
   return (
     <motion.div
       onClick={() => onClick?.(card)}
-      layoutId={`card-${card.id}`}
-      className={`relative flex flex-col cursor-pointer justify-between rounded-xl shadow-md w-[220px] p-3 flex-shrink-0 border-[5px] hover:scale-105 hover:shadow-xl transition-transform duration-200 ease-in-out ${borderColor} ${backgroundColor}`}
-      
+      className={`relative flex flex-col cursor-pointer justify-between rounded-xl shadow-md w-[220px] aspect-[3/4] p-3 flex-shrink-0 border-[5px] hover:shadow-xl ${borderColor} ${backgroundColor}`}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      style={{ transformPerspective: 1200, ...style }}
     >
       {/* "New" badge (optional) */}
       {isNew && (
@@ -47,14 +49,8 @@ export default function CardComponent({
       </div>
 
       {/* Company Image */}
-      <div className="w-full h-[150px] flex items-center justify-center">
-        <Image
-          src={card.imgurl}
-          alt={card.symbol}
-          width={200}
-          height={150}
-          className="object-contain max-h-full"
-        />
+      <div className="w-full flex items-center justify-center">
+        <img src={card.imgurl} alt={card.symbol} className="w-full max-h-[250px] object-contain mb-3" />
       </div>
 
       {/* Name */}
@@ -65,8 +61,6 @@ export default function CardComponent({
         <span>{card.sector}</span>
         <span>${card.price.toFixed(2)}</span>
       </div>
-
-
 
       {/* Optional Description */}
       {showDescription && (

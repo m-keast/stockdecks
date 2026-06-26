@@ -1,4 +1,4 @@
-// Deck Component
+// Pack Opening Component
 
 'use client';
 

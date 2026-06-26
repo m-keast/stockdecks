@@ -16,6 +16,7 @@ export async function getPrice(symbol: string): Promise<string> {
   try {
     const res = await fetch(`/api/price/${symbol}`);
     const data = await res.json();
+    console.log("called GetPrice in lib/stocks/getPrice: ", data.price)
     return data.price || '0';
   } catch (err) {
     console.error('Error fetching price:', err);
