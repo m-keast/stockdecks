@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export default function HomePage() {
   return (
-    <div>
+    <div >
       <div className="content">
         <h1>Stock Decks</h1>
 
@@ -20,6 +20,7 @@ export default function HomePage() {
                 <span className="top-number">1</span>
               </div>
               <Image
+                fill = {true}
                 src="https://bpb-us-w2.wpmucdn.com/u.osu.edu/dist/6/44792/files/2017/04/stock-market-3-21gyd1b.jpg"
                 alt="Image"
                 priority
@@ -43,6 +44,7 @@ export default function HomePage() {
                 <span className="top-number">1</span>
               </div>
               <Image
+                fill = {true}
                 src="https://bpb-us-w2.wpmucdn.com/u.osu.edu/dist/6/44792/files/2017/04/stock-market-3-21gyd1b.jpg"
                 alt="Image"
                 className="card-image"
@@ -63,6 +65,7 @@ export default function HomePage() {
                 <span className="top-number">1</span>
               </div>
               <Image
+                fill = {true}
                 src="https://bpb-us-w2.wpmucdn.com/u.osu.edu/dist/6/44792/files/2017/04/stock-market-3-21gyd1b.jpg"
                 alt="Image"
                 className="card-image"

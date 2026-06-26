@@ -22,6 +22,7 @@ export default function Deck() {
               key={card.id}
               card={card}
               onClick={() => setSelectedCard(card)}
+              style={selectedCard?.id === card.id ? { visibility: 'hidden' } : undefined}
             />
           ))
         )}

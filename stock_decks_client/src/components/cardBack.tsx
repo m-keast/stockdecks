@@ -1,5 +1,8 @@
+//Back of card component and styling
+
 import { Card } from '../lib/definitions';
 import { motion } from 'framer-motion';
+import { getSectorColor } from '../lib/cardstyle';
 
 interface CardBackProps {
   card: Card;
@@ -7,6 +10,7 @@ interface CardBackProps {
 }
 
 export default function CardBack({ card, onClose }: CardBackProps) {
+  const [borderColor, backgroundColor] = getSectorColor(card.sector) || ['#000', '#f0f0f0'];
   return (
     <div
       onClick ={onClose}
@@ -14,8 +18,11 @@ export default function CardBack({ card, onClose }: CardBackProps) {
     >
       <motion.div
         onClick={(e) => e.stopPropagation()}
-        className=" cursor-default bg-white p-6 rounded-lg w-11/12 max-w-2xl relative shadow-lg"
-        layoutId={`card-${card.id}`}
+        className={`cursor-default p-6 rounded-xl h-8/10 aspect-[3/4] mt-10 relative shadow-lg border-[10px] ${borderColor} ${backgroundColor}`}
+        initial={{ rotateY: -90, opacity: 1 }}
+        animate={{ rotateY: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 130, damping: 20}}
+        style={{ transformPerspective: 1200, backfaceVisibility: 'hidden' }}
       >
         <button
           onClick={onClose}
