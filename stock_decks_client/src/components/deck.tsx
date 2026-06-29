@@ -6,6 +6,7 @@ import CardComponent from '../components/card';
 import CardBack from '../components/cardBack'; // adjust path if needed
 import { Card as CardType } from '../lib/definitions';
 import { AnimatePresence } from 'framer-motion';
+import { updateStoredCard } from '../lib/storage';
 
 export default function Deck() {
   const cards = loadCards();
@@ -32,7 +33,11 @@ export default function Deck() {
           <CardBack
             key={selectedCard.id}
             card={selectedCard}
-            onClose={() => setSelectedCard(null)}
+            onClose={() => {
+              setSelectedCard(null);
+              updateStoredCard(selectedCard.id, { isNew: false })
+              console.log("closed cardback");
+            }}
           />
         )}
       </AnimatePresence>
