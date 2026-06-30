@@ -44,15 +44,21 @@ export default function CardComponent({
       <div className="flex justify-between text-gray-600 font-bold mb-2">
         <span>{card.symbol}</span>
         <span>1</span>
+
+        <img
+           src={`/data/sectorIcons/${card.sector}.png`}
+           alt={card.sector}
+          className="w-6 h-6 object-contain"
+        />
       </div>
 
       {/* Company Image */}
-      <div className="w-full flex items-center justify-center">
-        <img src={card.imgurl} alt={card.symbol} className="w-full max-h-[250px] object-contain mb-3" />
+      <div className="w-full flex h-[150px] items-center justify-center flex-shrink-0">
+        <img src={card.imgurl} alt={card.symbol} className="w-full h-full object-contain" />
       </div>
 
       {/* Name */}
-      <span className="text-center text-base font-semibold">{card.name}</span>
+      <span className="text-center text-black text-base font-semibold">{card.name}</span>
 
       {/* Info Row */}
       <div className="flex justify-between text-gray-600 mb-1 text-sm">
