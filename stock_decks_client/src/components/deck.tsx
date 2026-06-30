@@ -1,44 +1,205 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { loadCards } from '../lib/storage';
 import CardComponent from '../components/card';
-import CardBack from '../components/cardBack'; // adjust path if needed
+import CardBack from '../components/cardBack';
 import { Card as CardType } from '../lib/definitions';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion, secondsToMilliseconds } from 'framer-motion';
 import { updateStoredCard } from '../lib/storage';
+import { on } from 'events';
 
-export default function Deck() {
-  const cards = loadCards();
+export type SortBy = 'price' | 'sector' | 'dateAcquired';
+
+interface DeckProps {
+  sortBy: SortBy;
+  collapsed: boolean;
+  onExpand: () => void;
+}
+
+const STACK_COUNT = 5;
+const STACK_OFFSET = 4;
+
+function SectorGroup({
+  sector,
+  cards,
+  onCardClick,
+  selectedCardId,
+}: {
+  sector: string;
+  cards: CardType[];
+  onCardClick: (card: CardType) => void;
+  selectedCardId?: string | null;
+}) {
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    <div className="mb-8">
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className="flex items-center gap-2 mb-3 text-gray-700 font-semibold text-lg hover:text-black"
+      >
+        <span>{collapsed ? '▶' : '▼'}</span>
+        <span>{sector}</span>
+        <span className="text-sm font-normal text-gray-400">({cards.length})</span>
+      </button>
+
+      <AnimatePresence initial={false} mode="wait">
+        {collapsed ? (
+          <motion.div
+            key="stack"
+            className="flex flex-wrap gap-4 relative cursor-pointer"
+            style={{ height: 292 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={(e) =>{
+              e.stopPropagation();
+              setCollapsed(false);
+            }}
+          >
+            {cards.slice(0, STACK_COUNT).map((card, i) => (
+              <motion.div
+                key={card.id}
+                className="absolute pointer-events-none"
+                animate={{
+                  x: i * STACK_OFFSET,
+                  rotate: (i) * .5,
+                  zIndex: STACK_COUNT - i,
+                }}
+                transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+              >
+                <CardComponent
+                  card={card}
+                  onClick={() => onCardClick(card)}
+                  style={selectedCardId === card.id ? { visibility: 'hidden' } : undefined}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="expanded"
+            className="flex flex-wrap gap-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {cards.map((card) => (
+              <CardComponent
+                key={card.id}
+                card={card}
+                onClick={() => onCardClick(card)}
+                style={selectedCardId === card.id ? { visibility: 'hidden' } : undefined}
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+export default function Deck({ sortBy, collapsed, onExpand }: DeckProps) {
+  const rawCards = loadCards();
   const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
+
+  const cards = useMemo(() => {
+    return [...rawCards].sort((a, b) => {
+      if (sortBy === 'price') return b.price - a.price;
+      if (sortBy === 'dateAcquired') return new Date(b.dateAcquired).getTime() - new Date(a.dateAcquired).getTime();
+      if (sortBy === 'sector') return a.sector.localeCompare(b.sector);
+      return 0;
+    });
+  }, [rawCards, sortBy]);
+
+  const handleClose = () => {
+    if (!selectedCard) return;
+    updateStoredCard(selectedCard.id, { isNew: false });
+    setSelectedCard(null);
+  };
+
+  const grouped = useMemo(() => {
+    if (sortBy !== 'sector') return null;
+    return cards.reduce((acc, card) => {
+      (acc[card.sector] ??= []).push(card);
+      return acc;
+    }, {} as Record<string, CardType[]>);
+  }, [cards, sortBy]);
 
   return (
     <div className="pt-5 deck-container relative z-10">
-      <div id="card-container" className="flex justify-center flex-wrap gap-4">
-        {cards.length === 0 ? (
-          <p>No cards yet.</p>
-        ) : (
-          cards.map((card) => (
-            <CardComponent
-              key={card.id}
-              card={card}
-              onClick={() => setSelectedCard(card)}
-              style={selectedCard?.id === card.id ? { visibility: 'hidden' } : undefined}
+      {grouped ? (
+        <div className="px-4">
+          {Object.entries(grouped).map(([sector, sectorCards]) => (
+            <SectorGroup
+              key={sector}
+              sector={sector}
+              cards={sectorCards}
+              onCardClick={setSelectedCard}
+              selectedCardId={selectedCard?.id}
             />
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <AnimatePresence initial={false} mode="wait">
+          {collapsed ? (
+            <motion.div
+              key="stack"
+              className="relative px-8 cursor-pointer"
+              style={{ width: 220, height: 320 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onExpand();
+              }}
+            >
+              {cards.slice(0, STACK_COUNT).map((card, i) => (
+                <motion.div
+                  key={card.id}
+                  className="absolute pointer-events-none"
+                  animate={{
+                    x: i * STACK_OFFSET * 2,
+                    zIndex: STACK_COUNT - i,
+                  }}
+                  transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                >
+                  <CardComponent
+                    card={card}
+                    onClick={() => setSelectedCard(card)}
+                    style={selectedCard?.id === card.id ? { visibility: 'hidden' } : undefined}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="expanded"
+              className="flex justify-left w-full"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <div className="flex flex-wrap gap-4 px-8">
+                {cards.map((card) => (
+                  <CardComponent
+                    key={card.id}
+                    card={card}
+                    onClick={() => setSelectedCard(card)}
+                    style={selectedCard?.id === card.id ? { visibility: 'hidden' } : undefined}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
+
       <AnimatePresence>
         {selectedCard && (
-          <CardBack
-            key={selectedCard.id}
-            card={selectedCard}
-            onClose={() => {
-              setSelectedCard(null);
-              updateStoredCard(selectedCard.id, { isNew: false })
-              console.log("closed cardback");
-            }}
-          />
+          <CardBack key={selectedCard.id} card={selectedCard} onClose={handleClose} />
         )}
       </AnimatePresence>
     </div>
