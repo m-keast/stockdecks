@@ -13,7 +13,6 @@ type CardProps = {
   className?: string;               // For stacking/fanning in pack opening
   style?: React.CSSProperties;      // For dynamic inline styles (like colors)
   showDescription?: boolean;        // Hide description for compact views (e.g., pack opening)
-  isNew?: boolean;                  // Optional flag to show "New" badge
 };
 
 export default function CardComponent({
@@ -22,7 +21,6 @@ export default function CardComponent({
   className,
   style,
   showDescription = false,
-  isNew = false,
 }: CardProps) {
   const [borderColor, backgroundColor] = getSectorColor(card.sector) || ['#000', '#f0f0f0'];
 
@@ -36,8 +34,8 @@ export default function CardComponent({
       style={{ transformPerspective: 1200, ...style }}
     >
       {/* "New" badge (optional) */}
-      {isNew && (
-        <span className="absolute top-1 right-1 bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow">
+      {card.isNew && (
+        <span className="absolute -top-3 -right-3 bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow">
           NEW
         </span>
       )}
@@ -46,15 +44,21 @@ export default function CardComponent({
       <div className="flex justify-between text-gray-600 font-bold mb-2">
         <span>{card.symbol}</span>
         <span>1</span>
+
+        <img
+           src={`/data/sectorIcons/${card.sector}.png`}
+           alt={card.sector}
+          className="w-6 h-6 object-contain"
+        />
       </div>
 
       {/* Company Image */}
-      <div className="w-full flex items-center justify-center">
-        <img src={card.imgurl} alt={card.symbol} className="w-full max-h-[250px] object-contain mb-3" />
+      <div className="w-full flex h-[150px] items-center justify-center flex-shrink-0">
+        <img src={card.imgurl} alt={card.symbol} className="w-full h-full object-contain" />
       </div>
 
       {/* Name */}
-      <span className="text-center text-base font-semibold">{card.name}</span>
+      <span className="text-center text-black text-base font-semibold">{card.name}</span>
 
       {/* Info Row */}
       <div className="flex justify-between text-gray-600 mb-1 text-sm">

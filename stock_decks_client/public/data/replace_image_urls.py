@@ -6,7 +6,7 @@ INPUT_CSV  = "companies.csv"   # path to your input CSV
 OUTPUT_CSV = "companies.csv"      # path to write the updated CSV
 
 # Only rows whose current Image_URL matches this value will be updated
-REPLACE_ONLY_IF_URL = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Wiktionary-logo-en-v2.svg/40px-Wiktionary-logo-en-v2.svg.png"
+REPLACE_ONLY_IF_URL = "https://upload.wikimedia.org/wikipedia/en/thumb/5/5f/Disambig_gray.svg/40px-Disambig_gray.svg.png"
 
 # Add or edit entries to match your exact Sector values (case-sensitive)
 SECTOR_IMAGE_URLS = {

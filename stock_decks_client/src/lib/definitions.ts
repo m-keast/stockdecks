@@ -7,4 +7,5 @@ export type Card = {
   description: string;
   imgurl: string;
   dateAcquired: string;
+  isNew: boolean;
 };

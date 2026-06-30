@@ -5,6 +5,7 @@
 import { addCard } from './storage';
 import { getPrice, getRandomStockData } from './stocks';
 import type { Card } from '../lib/definitions';
+import { removeCardById } from './storage'
 
 
 // Creates and returns a new card with stock data
@@ -25,6 +26,7 @@ export async function getCard(): Promise<Card | null> {
       description: stock.description,
       imgurl: stock.imgurl,
       dateAcquired: new Date().toISOString(),
+      isNew: true,
     };
 
     addCard(newCard);

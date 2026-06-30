@@ -42,7 +42,8 @@ function Pack({ id }: UnopenedPack) {
   return (
     <div
       onClick={handleClick}
-      className="relative w-48 h-64 cursor-pointer bg-gradient-to-br from-purple-600 to-indigo-700 rounded-xl shadow-lg border-4 border-dashed border-indigo-300 p-4 flex flex-col justify-between items-center group hover:scale-105 transition-transform"
+      className="relative w-48 h-64 cursor-pointer bg-gradient-to-br from-purple-600 to-indigo-700 rounded-xl shadow-lg border-4
+      border-dashed border-indigo-300 p-4 flex flex-col justify-between items-center group hover:scale-105 transition-transform"
     >
       {/* Grooved Edge Effect */}
       <div className="absolute -top-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-400 via-white to-indigo-400 rounded-t-sm" />

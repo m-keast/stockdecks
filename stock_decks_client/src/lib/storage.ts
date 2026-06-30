@@ -30,12 +30,54 @@ export function saveCards(cards: Card[]): void {
   }
 }
 
+
 //Adds a card parameter to localStorage
 export function addCard(card: Card): void {
   const cards = loadCards();
   cards.push(card);
   saveCards(cards);
 }
+
+//Removes card from localStorage by ID
+export function removeCardById(targetId: string): void{
+  try{
+    //Get raw userCards data from storage
+    const rawData = localStorage.getItem('userCards');
+    if (!rawData) return; // Exit if the key doesn't exist
+
+    const cards:Card[] = JSON.parse(rawData);
+
+    const updatedCards = cards.filter((card) => card.id !== targetId);
+    saveCards(updatedCards);
+    
+  } catch (error) {
+    console.error("Error updating localStorage data (removing card by id)", error);
+  }
+}
+
+export function updateStoredCard(
+  cardId: string,
+  updates: Partial<Card>
+): void {
+  const rawData = localStorage.getItem('userCards');
+  if (!rawData) return;
+
+  try {
+    const cards: Card[] = JSON.parse(rawData);
+    // Map through the array to find and update the target card
+    const updatedCards = cards.map((card) => {
+      if (card.id === cardId) {
+        return { ...card, ...updates }; // Keep existing fields, overwrite updated fields
+      }
+      return card; // Keep other cards exactly as they are
+    });
+
+    localStorage.setItem('userCards', JSON.stringify(updatedCards));
+  } catch (error) {
+    console.error("Error updating Card array in localStorage:", error);
+  }
+}
+
 
 //Load packs from localStorage
 export function loadPacks(): UnopenedPack[] {
