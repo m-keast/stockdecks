@@ -18,3 +18,13 @@ export function getSectorColor(sector: string): [string, string] {
     default: return ['border-cardDefault-border', 'bg-cardDefault-background'];
   }
 }
+
+// Returns the base graphic for a pack, based on the pack type
+export function getPackImage(packType: string): string {
+  switch (packType) {
+    case 'basic': return '/data/basic_pack.png';
+    case 'epic': return '/data/epic_pack.png';
+    case 'legendary': return '/data/legendary_pack.png';
+    default: return '/data/basic_pack.png';
+  }
+}

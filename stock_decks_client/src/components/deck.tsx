@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { loadCards } from '../lib/storage';
 import CardComponent from '../components/card';
 import CardBack from '../components/cardBack';
 import { Card as CardType } from '../lib/definitions';
-import { AnimatePresence, motion, secondsToMilliseconds } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { updateStoredCard } from '../lib/storage';
-import { on } from 'events';
+import { useRouter } from 'next/navigation';
 
 export type SortBy = 'price' | 'sector' | 'dateAcquired';
 
@@ -15,6 +15,7 @@ interface DeckProps {
   sortBy: SortBy;
   collapsed: boolean;
   onExpand: () => void;
+  openCardId?: string | null;
 }
 
 const STACK_COUNT = 5;
@@ -100,9 +101,20 @@ function SectorGroup({
   );
 }
 
-export default function Deck({ sortBy, collapsed, onExpand }: DeckProps) {
+export default function Deck({ sortBy, collapsed, onExpand, openCardId }: DeckProps) {
+  const router = useRouter();
   const rawCards = loadCards();
   const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
+
+  useEffect(() => {
+    if (openCardId && rawCards.length > 0) {
+      const card = rawCards.find((c) => c.id === openCardId);
+      if (card) {
+        setSelectedCard(card);
+        router.replace('/deck');
+      }
+    }
+  }, [openCardId, rawCards.length]);
 
   const cards = useMemo(() => {
     return [...rawCards].sort((a, b) => {
@@ -128,7 +140,7 @@ export default function Deck({ sortBy, collapsed, onExpand }: DeckProps) {
   }, [cards, sortBy]);
 
   return (
-    <div className="pt-5 deck-container relative z-10">
+    <div className="pt-5 pb-10 deck-container relative z-10">
       {grouped ? (
         <div className="px-4">
           {Object.entries(grouped).map(([sector, sectorCards]) => (

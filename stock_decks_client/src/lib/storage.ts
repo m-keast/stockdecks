@@ -92,9 +92,11 @@ export function loadPacks(): UnopenedPack[] {
 
 }
 
-//Saves pack to localStorage
-export function savePack(packid: string): void {
+//Saves pack to localStorage, returns the generated unique id for the stored pack
+export function savePack(packType: string): string {
   const unopened = JSON.parse(localStorage.getItem('unopenedPacks') || '[]');
-  unopened.push({ id: packid, timestamp: Date.now() });
+  const id = crypto.randomUUID();
+  unopened.push({ id, timestamp: Date.now(), packType });
   localStorage.setItem('unopenedPacks', JSON.stringify(unopened));
+  return id;
 }

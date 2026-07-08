@@ -1,8 +1,10 @@
 'use client';
 
-import { useRef, useEffect, useMemo } from 'react';
+import { useRef, useEffect } from 'react';
 import { loadCards } from '../lib/storage';
 import CardComponent from '../components/card';
+import { useRouter } from 'next/navigation';
+import { Card as CardType } from '../lib/definitions';
 
 const CARD_WIDTH = 220;
 const GAP = 16;
@@ -12,6 +14,7 @@ const MAX_SPEED = 12;
 const DEAD_ZONE = 0.25;
 
 export default function DeckScroller() {
+  const router = useRouter()
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -20,7 +23,7 @@ export default function DeckScroller() {
   const speedRef = useRef(0);
   const paddingRef = useRef(0);
 
-  const cards = useMemo(() => loadCards(), []);
+  const cards = loadCards();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -105,6 +108,7 @@ export default function DeckScroller() {
             key={card.id}
             ref={(el) => { cardRefs.current[i] = el; }}
             style={{ flexShrink: 0, transformOrigin: 'bottom center' }}
+            onClick={() => router.push(`/deck?openCard=${card.id}`)}
           >
             <CardComponent card={card} />
           </div>
