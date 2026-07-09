@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { getCard} from '../../../lib/cards';
@@ -8,18 +8,27 @@ import type { Card } from '../../../lib/definitions';
 import CardComponent from '../../../components/card';
 import type { UnopenedPack } from '../../../components/packs';
 import { useRouter } from 'next/navigation';
+import { PackVisual } from '../../../components/packs';
+import { loadPacks } from '../../../lib/storage';
 
 export default function PackOpenPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
-  const  numCards = 5  //Set up for input param later -> const { numcards } = useParams<{ numCards: int }>();
+  // Captured once on mount, since openPack removes this pack from storage
+  // as soon as it starts, which would otherwise make this fall back to 'basic' mid-open.
+  const [packType] = useState(() => loadPacks().find((p) => p.id === id)?.packType ?? 'basic');
+  const [numCards] = useState(() => loadPacks().find((p) => p.id === id)?.numCards ?? 5);
   const [cardsRemaining, setCardsRemaining] = useState(numCards);
   const [cards, setCards] = useState<Card[]>([]);
   const [packOpened, setPackOpened] = useState(false);
   const [flipped, setFlipped] = useState<boolean[]>([]);
-
+  const [isOpening, setIsOpening] = useState(false);
+  const isOpeningRef = useRef(false);
 
   const openPack = async () => {
+    if (isOpeningRef.current) return;
+    isOpeningRef.current = true;
+    setIsOpening(true);
 
     const newCards: Card[] = [];
 
@@ -79,15 +88,18 @@ export default function PackOpenPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-6">
       {!packOpened ? (
-        <motion.div
-          initial={{ opacity: 0, y: -100 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="bg-yellow-500 text-black p-8 rounded-lg shadow-lg cursor-pointer"
-          onClick={openPack}
-        >
-          <h1 className="text-3xl font-bold">Click to Open {id} Pack</h1>
-        </motion.div>
+        <div className="flex flex-col items-center gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: -100 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className={`relative w-64 aspect-square group transition-transform ${isOpening ? 'pointer-events-none opacity-75' : 'cursor-pointer hover:scale-105'}`}
+            onClick={openPack}
+          >
+            <PackVisual packType={packType} />
+          </motion.div>
+          <h1 className="text-xl font-semibold">{isOpening ? 'Opening...' : 'Click to Open'}</h1>
+        </div>
       ) : (
         <div className="relative w-[260px] h-[320px] mt-8">
           {cards.map((card, index) => {
