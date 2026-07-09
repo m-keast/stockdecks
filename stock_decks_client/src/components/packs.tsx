@@ -11,6 +11,7 @@ export type UnopenedPack = {
 id: string;
 timestamp: number;
 packType: string;
+numCards: number;
 };
 
 export default function Packs() {
@@ -24,7 +25,7 @@ export default function Packs() {
           <p>No unopened packs.</p>
         ) : (
           packs.map((pack) => (
-            <Pack key={pack.id} id={pack.id} timestamp={pack.timestamp} packType={pack.packType} />
+            <Pack key={pack.id} id={pack.id} timestamp={pack.timestamp} packType={pack.packType} numCards={pack.numCards}/>
           ))
         )}
       </div>
@@ -34,17 +35,11 @@ export default function Packs() {
 
 
 
-export function Pack({ id, packType }: UnopenedPack) {
-  const router = useRouter();
-
-  const handleClick = () => router.push(`/pack/${id}`);
-
+// Base pack artwork with the logo/title overlaid on top. No click behavior of its own,
+// so callers can wrap it with whatever interaction fits (navigate to it, open it, etc).
+export function PackVisual({ packType }: { packType: string }) {
   return (
-    <div
-      onClick={handleClick}
-      className="relative w-48 aspect-square cursor-pointer group hover:scale-105 transition-transform"
-    >
-      {/* Base pack graphic */}
+    <>
       <Image
         src={getPackImage(packType)}
         alt={`${packType} pack`}
@@ -53,7 +48,6 @@ export function Pack({ id, packType }: UnopenedPack) {
         className="object-contain drop-shadow-lg"
       />
 
-      {/* Overlay */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
         <Image
           src="/data/logo.png"
@@ -66,6 +60,21 @@ export function Pack({ id, packType }: UnopenedPack) {
           {packType} pack
         </div>
       </div>
+    </>
+  );
+}
+
+export function Pack({ id, packType }: UnopenedPack) {
+  const router = useRouter();
+
+  const handleClick = () => router.push(`/pack/${id}`);
+
+  return (
+    <div
+      onClick={handleClick}
+      className="relative w-48 aspect-square cursor-pointer group hover:scale-105 transition-transform"
+    >
+      <PackVisual packType={packType} />
     </div>
   );
 }
