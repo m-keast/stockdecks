@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { getSectorColor } from '../lib/cardstyle';
 import { Card } from '../lib/definitions'; // <-- Import shared Card type
 import { motion } from 'framer-motion';
+import { getTagIcons } from '../lib/cardstyle';
 
 
 // Extra card properties for display
@@ -22,12 +23,16 @@ export default function CardComponent({
   style,
   showDescription = false,
 }: CardProps) {
-  const [borderColor, backgroundColor] = getSectorColor(card.sector) || ['#000', '#f0f0f0'];
+  const [borderColor, backgroundColor, shinyBg] = getSectorColor(card.sector) || ['#000', '#f0f0f0'];
 
   return (
     <motion.div
       onClick={() => onClick?.(card)}
-      className={`relative flex flex-col cursor-pointer justify-between rounded-xl shadow-md w-[220px] aspect-[3/4] p-3 flex-shrink-0 border-[5px] hover:shadow-xl ${borderColor} ${backgroundColor}`}
+      className={
+        `relative flex flex-col cursor-pointer justify-between rounded-xl shadow-md w-[220px] aspect-[3/4] p-3
+        flex-shrink-0 border-[5px] hover:shadow-xl ${borderColor} 
+        ${card.tags.length > 0 ? ` bg-gradient-to-r ${shinyBg}` : `${backgroundColor}` }`
+      }
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
@@ -43,13 +48,21 @@ export default function CardComponent({
       {/* Header */}
       <div className="flex justify-between text-gray-600 font-bold mb-2">
         <span>{card.symbol}</span>
-        <span>1</span>
 
-        <img
-           src={`/data/sectorIcons/${card.sector}.png`}
-           alt={card.sector}
-          className="w-6 h-6 object-contain"
-        />
+      <div className="flex justify-between">
+          {card.tags.length > 0 && (
+            <div>
+              {getTagIcons(card.tags).map((icon) => (
+                <img key={icon} src={icon} alt="" className="w-6 h-6 object-contain drop-shadow mr-2" />
+              ))}
+            </div>
+          )}
+          <img
+            src={`/data/sectorIcons/${card.sector}.png`}
+            alt={card.sector}
+            className="w-6 h-6 object-contain"
+          />
+        </div>
       </div>
 
       {/* Company Image */}

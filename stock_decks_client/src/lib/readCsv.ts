@@ -14,6 +14,7 @@ export type StockRecord = {
   sector: string;
   description: string;
   imgurl: string;
+  tags: string[];
 };
 
 
@@ -28,13 +29,14 @@ export function readRandomStock(): Promise<StockRecord> {
       .pipe(csv())
       .on('data', (data) => {
         const keys = Object.keys(data);
-        const symbol = data[keys[0]];  //CSV column 0
-        const stockname = data[keys[1]]; //CSV column 1
-        const sector = data[keys[10]]; //CSV column 10
-        const description = data[keys[12]]; //CSV column 12
-        const imgurl = data[keys[13]];    //CSV column 13
+        const symbol = data['Symbol']; 
+        const stockname = data['Trimmed Name'];
+        const sector = data['Sector'];
+        const description = data['Description'];
+        const imgurl = data['Image_URL'];
+        const tags = data['Tags'].split(' ').filter(Boolean);
         if (symbol && stockname && sector && description && imgurl) {
-          results.push({ symbol, stockname, sector, description, imgurl });
+          results.push({ symbol, stockname, sector, description, imgurl, tags });
         }
       })
       .on('end', () => {

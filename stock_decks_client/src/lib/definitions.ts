@@ -6,6 +6,7 @@ export type Card = {
   price: number;
   description: string;
   imgurl: string;
+  tags: string[];
   dateAcquired: string;
   isNew: boolean;
 };
