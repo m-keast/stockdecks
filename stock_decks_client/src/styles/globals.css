@@ -36,6 +36,20 @@
   --color-telecommunication-background: rgb(240, 215, 245);
   --color-utilities-background: rgb(225, 230, 250);
   --color-cardDefault-background: rgb(240, 240, 240);
+
+  --color-basicMaterials-sbackground: rgb(210, 175, 157);
+  --color-consumerDiscretionary-sbackground: rgb(255, 213, 150);
+  --color-consumerStaples-sbackground: rgb(211, 234, 184);
+  --color-energy-sbackground: rgb(255, 232, 152);
+  --color-finance-sbackground: rgb(184, 189, 194);
+  --color-healthCare-sbackground: rgb(168, 230, 168);
+  --color-industrials-sbackground: rgb(201, 183, 176);
+  --color-realEstate-sbackground: rgb(183, 199, 206);
+  --color-technology-sbackground: rgb(167, 213, 249);
+  --color-telecommunication-sbackground: rgb(215, 162, 224);
+  --color-utilities-sbackground: rgb(176, 185, 229);
+  --color-cardDefault-sbackground: rgb(215, 215, 215);
+
 }
 
 @media (prefers-color-scheme: dark) {

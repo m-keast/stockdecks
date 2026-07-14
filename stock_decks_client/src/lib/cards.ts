@@ -25,6 +25,7 @@ export async function getCard(): Promise<Card | null> {
       price: parseFloat(price),
       description: stock.description,
       imgurl: stock.imgurl,
+      tags: stock.tags,
       dateAcquired: new Date().toISOString(),
       isNew: true,
     };

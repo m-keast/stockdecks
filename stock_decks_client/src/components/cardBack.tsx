@@ -3,6 +3,7 @@
 import { Card } from '../lib/definitions';
 import { motion } from 'framer-motion';
 import { getSectorColor } from '../lib/cardstyle';
+import { getTagIcons } from '../lib/cardstyle';
 
 interface CardBackProps {
   card: Card;
@@ -10,7 +11,7 @@ interface CardBackProps {
 }
 
 export default function CardBack({ card, onClose }: CardBackProps) {
-  const [borderColor, backgroundColor] = getSectorColor(card.sector) || ['#000', '#f0f0f0'];
+  const [borderColor, backgroundColor, shinyBg] = getSectorColor(card.sector) || ['#000', '#f0f0f0'];
   return (
     <div
       onClick ={onClose}
@@ -18,7 +19,10 @@ export default function CardBack({ card, onClose }: CardBackProps) {
     >
       <motion.div
         onClick={(e) => e.stopPropagation()}
-        className={`cursor-default p-6 rounded-xl h-8/10 aspect-[3/4] mt-10 relative shadow-lg border-[10px] ${borderColor} ${backgroundColor}`}
+        className={
+          `cursor-default p-6 rounded-xl h-8/10 aspect-[3/4] mt-10 relative shadow-lg border-[10px] ${borderColor} ${backgroundColor}
+          ${card.tags.length > 0 ? ` bg-linear-to-r ${shinyBg}` : `${backgroundColor}` }`
+        }
         initial={{ rotateY: -90, opacity: 1 }}
         animate={{ rotateY: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 130, damping: 20}}
@@ -37,6 +41,13 @@ export default function CardBack({ card, onClose }: CardBackProps) {
         <p><strong>Sector:</strong> {card.sector}</p>
         <p><strong>Price:</strong> ${card.price.toFixed(2)}</p>
         <p className="mt-2 text-sm text-gray-600">{card.description}</p>
+        {card.tags.length > 0 && (
+          <div className='absolute bottom-10 '>
+            {getTagIcons(card.tags).map((icon) => (
+              <img key={icon} src={icon} alt="" className="w-6 h-6 object-contain drop-shadow mr-2" />
+            ))}
+          </div>
+        )}
       </motion.div>
     </div>
   );

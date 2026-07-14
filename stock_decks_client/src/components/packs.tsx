@@ -4,6 +4,7 @@
 
 import { loadPacks } from '../lib/storage';
 import { getPackImage } from '../lib/cardstyle';
+import { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
 
@@ -66,8 +67,13 @@ export function PackVisual({ packType }: { packType: string }) {
 
 export function Pack({ id, packType }: UnopenedPack) {
   const router = useRouter();
+  const isOpeningRef = useRef(false);
 
-  const handleClick = () => router.push(`/pack/${id}`);
+  const handleClick = () => {
+    if (isOpeningRef.current) return;
+    isOpeningRef.current = true;
+    router.push(`/pack/${id}`);
+  }
 
   return (
     <div

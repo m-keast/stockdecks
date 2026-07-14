@@ -17,7 +17,7 @@ export default function PackOpenPage() {
   // Captured once on mount, since openPack removes this pack from storage
   // as soon as it starts, which would otherwise make this fall back to 'basic' mid-open.
   const [packType] = useState(() => loadPacks().find((p) => p.id === id)?.packType ?? 'basic');
-  const [numCards] = useState(() => loadPacks().find((p) => p.id === id)?.numCards ?? 5);
+  const [numCards] = useState(() => loadPacks().find((p) => p.id === id)?.numCards ?? 3);
   const [cardsRemaining, setCardsRemaining] = useState(numCards);
   const [cards, setCards] = useState<Card[]>([]);
   const [packOpened, setPackOpened] = useState(false);
@@ -73,15 +73,14 @@ export default function PackOpenPage() {
       updated[index] = true;
       setFlipped(updated);
 
-      setCardsRemaining(prev => {
-        const next = prev - 1;
-        console.log(`Card flipped. Remaining: ${next}`);
-        if (next <= 0) {
-          console.log('All cards revealed');
-          router.back(); // Go to previous page
-        }
-        return next;
-      });
+      const next = cardsRemaining - 1;
+      console.log(`Card flipped. Remaining: ${next}`);
+      setCardsRemaining(next);
+
+      if (next <= 0) {
+        console.log('All cards revealed');
+        router.push(`/deck`); // Go to deck page
+      }
     }
   };
 

@@ -13,6 +13,11 @@ export async function GET(_request: NextRequest, context: unknown) {
   const { symbol } = await (context as ParamsContext).params;
   const apiKey = "4df333f8d0a7400b9a642a01c4d1536f";
 
+  console.log("diabled price api call. Go to api/price/route to fix")
+  //temporary disable call of price api ****************************************
+  return NextResponse.json({ error: 'Failed to fetch price' }, { status: 500 });
+  //*************************************************************** */
+
   if (!apiKey) {
     return NextResponse.json({ error: 'API key not found' }, { status: 500 });
   }

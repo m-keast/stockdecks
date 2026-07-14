@@ -5,8 +5,8 @@ import pandas as pd
 INPUT_CSV  = "companies.csv"   # path to your input CSV
 OUTPUT_CSV = "companies.csv"      # path to write the updated CSV
 
-# Only rows whose current Image_URL matches this value will be updated
-REPLACE_ONLY_IF_URL = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Factory_USA.svg/40px-Factory_USA.svg.png"
+# Only rows whose current Image_URL contains this substring will be updated
+REPLACE_IF_URL_CONTAINS = "40px"
 
 # Add or edit entries to match your exact Sector values (case-sensitive)
 SECTOR_IMAGE_URLS = {
@@ -32,7 +32,7 @@ unmapped = set(df["Sector"].dropna().unique()) - set(SECTOR_IMAGE_URLS.keys())
 if unmapped:
     print(f"Warning: these sectors have no URL mapped and will be left unchanged: {unmapped}")
 
-mask = df["Image_URL"] == REPLACE_ONLY_IF_URL
+mask = df["Image_URL"].str.contains(REPLACE_IF_URL_CONTAINS, na=False)
 df.loc[mask, "Image_URL"] = df.loc[mask, "Sector"].map(SECTOR_IMAGE_URLS).fillna(df.loc[mask, "Image_URL"])
 
 df.to_csv(OUTPUT_CSV, index=False)
