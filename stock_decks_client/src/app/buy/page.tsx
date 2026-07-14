@@ -1,7 +1,7 @@
 // Page for buying packs of cards
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Pack } from '../../components/packs';
 import { savePack } from '@/lib/storage';
@@ -40,9 +40,17 @@ const PACKS = [
 export default function BuyPage() {
   const [selectedPack, setSelectedPack] = useState<typeof PACKS[0] | null>(null);
   const router = useRouter();
+  const isOpeningRef = useRef(false);
 
   const handlePurchase = (packType: string, numCards: number) => {
     // Store the pack as "unopened" in localStorage
+    console.log("Trying to purchase")
+    if (isOpeningRef.current){
+      console.log("blocked purchase due to duplicate request")
+      return;
+    }
+    isOpeningRef.current = true;
+
     const newId = savePack(packType, numCards);
     // Redirect to the pack opening page
     router.push(`/pack/${newId}`);

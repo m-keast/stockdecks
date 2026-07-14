@@ -73,15 +73,14 @@ export default function PackOpenPage() {
       updated[index] = true;
       setFlipped(updated);
 
-      setCardsRemaining(prev => {
-        const next = prev - 1;
-        console.log(`Card flipped. Remaining: ${next}`);
-        if (next <= 0) {
-          console.log('All cards revealed');
-          router.back(); // Go to previous page
-        }
-        return next;
-      });
+      const next = cardsRemaining - 1;
+      console.log(`Card flipped. Remaining: ${next}`);
+      setCardsRemaining(next);
+
+      if (next <= 0) {
+        console.log('All cards revealed');
+        router.push(`/deck`); // Go to deck page
+      }
     }
   };
 
