@@ -21,7 +21,7 @@ export default function CardBack({ card, onClose }: CardBackProps) {
         onClick={(e) => e.stopPropagation()}
         className={
           `cursor-default p-6 rounded-xl h-8/10 aspect-[3/4] mt-10 relative shadow-lg border-[10px] ${borderColor} ${backgroundColor}
-          ${card.tags.length > 0 ? ` bg-gradient-to-r ${shinyBg}` : `${backgroundColor}` }`
+          ${card.tags.length > 0 ? ` bg-linear-to-r ${shinyBg}` : `${backgroundColor}` }`
         }
         initial={{ rotateY: -90, opacity: 1 }}
         animate={{ rotateY: 0, opacity: 1 }}

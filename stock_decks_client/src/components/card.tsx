@@ -31,7 +31,7 @@ export default function CardComponent({
       className={
         `relative flex flex-col cursor-pointer justify-between rounded-xl shadow-md w-[220px] aspect-[3/4] p-3
         flex-shrink-0 border-[5px] hover:shadow-xl ${borderColor} ${backgroundColor}
-        ${card.tags.length > 0 ? ` bg-gradient-to-r ${shinyBg}` : `${backgroundColor}` }`
+        ${card.tags.length > 0 ? ` bg-linear-to-r ${shinyBg}` : `${backgroundColor}` }`
       }
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
@@ -76,7 +76,7 @@ export default function CardComponent({
       {/* Info Row */}
       <div className="flex justify-between text-gray-600 mb-1 text-sm">
         <span>{card.sector}</span>
-        <span>${card.price.toFixed(2)}</span>
+        <span>{card.price.toFixed(2)}</span>
       </div>
 
       {/* Optional Description */}

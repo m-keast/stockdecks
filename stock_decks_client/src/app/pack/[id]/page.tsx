@@ -17,7 +17,7 @@ export default function PackOpenPage() {
   // Captured once on mount, since openPack removes this pack from storage
   // as soon as it starts, which would otherwise make this fall back to 'basic' mid-open.
   const [packType] = useState(() => loadPacks().find((p) => p.id === id)?.packType ?? 'basic');
-  const [numCards] = useState(() => loadPacks().find((p) => p.id === id)?.numCards ?? 5);
+  const [numCards] = useState(() => loadPacks().find((p) => p.id === id)?.numCards ?? 3);
   const [cardsRemaining, setCardsRemaining] = useState(numCards);
   const [cards, setCards] = useState<Card[]>([]);
   const [packOpened, setPackOpened] = useState(false);
