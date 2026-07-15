@@ -30,7 +30,7 @@ export default function CardComponent({
       onClick={() => onClick?.(card)}
       className={
         `relative flex flex-col cursor-pointer justify-between rounded-xl shadow-md w-[220px] aspect-[3/4] p-3
-        flex-shrink-0 border-[5px] hover:shadow-xl ${borderColor} ${backgroundColor}
+        flex-shrink-0 border-[5px] hover:shadow-xl select-none ${borderColor} ${backgroundColor}
         ${card.tags.length > 0 ? ` bg-linear-to-r ${shinyBg}` : `${backgroundColor}` }`
       }
       whileHover={{ scale: 1.05 }}
@@ -38,6 +38,7 @@ export default function CardComponent({
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       style={{ transformPerspective: 1200, ...style }}
     >
+
       {/* "New" badge (optional) */}
       {card.isNew && (
         <span className="absolute -top-3 -right-3 bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow">

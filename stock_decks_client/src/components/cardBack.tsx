@@ -42,10 +42,11 @@ export default function CardBack({ card, onClose }: CardBackProps) {
         <p><strong>Price:</strong> ${card.price.toFixed(2)}</p>
         <p className="mt-2 text-sm text-gray-600">{card.description}</p>
         {card.tags.length > 0 && (
-          <div className='absolute bottom-10 '>
+          <div className='flex absolute bottom-10 '>
             {getTagIcons(card.tags).map((icon) => (
               <img key={icon} src={icon} alt="" className="w-6 h-6 object-contain drop-shadow mr-2" />
             ))}
+            <p>Member of the S&P 500 index</p>
           </div>
         )}
       </motion.div>
