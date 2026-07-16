@@ -13,6 +13,8 @@ id: string;
 timestamp: number;
 packType: string;
 numCards: number;
+expectedSpecials: number;
+specialsGuaranteed: number;
 };
 
 export default function Packs() {
@@ -26,7 +28,8 @@ export default function Packs() {
           <p>No unopened packs.</p>
         ) : (
           packs.map((pack) => (
-            <Pack key={pack.id} id={pack.id} timestamp={pack.timestamp} packType={pack.packType} numCards={pack.numCards}/>
+            <Pack key={pack.id} id={pack.id} timestamp={pack.timestamp} packType={pack.packType} numCards={pack.numCards}
+            expectedSpecials={pack.expectedSpecials} specialsGuaranteed={pack.specialsGuaranteed}/>
           ))
         )}
       </div>

@@ -19,7 +19,7 @@ export type StockRecord = {
 
 
 // Returns a random stock from the CSV file
-export function readRandomStock(): Promise<StockRecord> {
+export function readRandomStock(special: boolean): Promise<StockRecord> {
   return new Promise((resolve, reject) => {
     const results: StockRecord[] = [];
 
@@ -34,15 +34,17 @@ export function readRandomStock(): Promise<StockRecord> {
         const sector = data['Sector'];
         const description = data['Description'];
         const imgurl = data['Image_URL'];
-        const tags = data['Tags'].split(' ').filter(Boolean);
+        const tags = (data['Tags']).split(' ').filter(Boolean);
         if (symbol && stockname && sector && description && imgurl) {
           results.push({ symbol, stockname, sector, description, imgurl, tags });
         }
       })
       .on('end', () => {
-        if (results.length === 0) return reject(new Error('No valid stocks found'));
-        const random = results[Math.floor(Math.random() * results.length)];
-        resolve(random);
+        const pool = special
+          ? results.filter((r) => r.tags.length > 0)   // tagged pool
+          : results.filter((r) => r.tags.length === 0); // untagged pool
+        if (pool.length === 0) return reject(new Error('No matching stocks'));
+        resolve(pool[Math.floor(Math.random() * pool.length)]);
       })
       .on('error', reject);
   });
