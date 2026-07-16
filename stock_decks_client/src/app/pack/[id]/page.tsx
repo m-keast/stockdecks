@@ -18,6 +18,8 @@ export default function PackOpenPage() {
   // as soon as it starts, which would otherwise make this fall back to 'basic' mid-open.
   const [packType] = useState(() => loadPacks().find((p) => p.id === id)?.packType ?? 'basic');
   const [numCards] = useState(() => loadPacks().find((p) => p.id === id)?.numCards ?? 3);
+  const [expectedSpecials] = useState(() => loadPacks().find((p) => p.id === id)?.expectedSpecials ?? .10);
+  const [specialsGuaranteed] = useState(() => loadPacks().find((p) => p.id === id)?.specialsGuaranteed ?? 0);
   const [cardsRemaining, setCardsRemaining] = useState(numCards);
   const [cards, setCards] = useState<Card[]>([]);
   const [packOpened, setPackOpened] = useState(false);
@@ -30,19 +32,39 @@ export default function PackOpenPage() {
     isOpeningRef.current = true;
     setIsOpening(true);
 
-    const newCards: Card[] = [];
-
     // Remove from unopened
     const unopened: UnopenedPack[] = JSON.parse(localStorage.getItem('unopenedPacks') || '[]');
     const remainingUnopened = unopened.filter((p) => p.id !== id);
     localStorage.setItem('unopenedPacks', JSON.stringify(remainingUnopened));
 
 
+
+    //Generate array to determine which indicies of newCards will contain special cards
+    const specialPlan = new Array<boolean>(numCards).fill(false);
+
+    const guaranteed = Math.min(specialsGuaranteed, numCards);
+    const indices = Array.from({ length: numCards }, (_, i) => i);
+    for (let i = 0; i < guaranteed; i++) {
+      // Partial Fisher–Yates: pick `guaranteed` distinct random indices.
+      const j = i + Math.floor(Math.random() * (numCards - i));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+      specialPlan[indices[i]] = true;
+    }
+
+    const remaining = numCards - guaranteed;
+    const p = remaining > 0 ? Math.min(expectedSpecials / remaining, 1) : 0;
+    for (let i = 0; i < numCards; i++) {
+      if (!specialPlan[i] && Math.random() < p) specialPlan[i] = true;
+    }
+
     // Get all the new cards and add to storage
+    const newCards: Card[] = [];
     for (let i = 0; i < numCards; i++) {
       try {
+
+        //Logic for generating cards according to specialsGuaranteed and expectedSpecials
         console.log(`Fetching card ${i + 1}`);
-        const card = await getCard();
+        const card = await getCard(specialPlan[i]); //gets random card 
         if (!card) {
           i--;
           continue;
@@ -55,7 +77,6 @@ export default function PackOpenPage() {
         };
 
         newCards.push(fullCard);
-        console.log('New card added:', fullCard);
       } catch (error) {
         console.error('getCard error:', error);
         i--;
@@ -74,11 +95,9 @@ export default function PackOpenPage() {
       setFlipped(updated);
 
       const next = cardsRemaining - 1;
-      console.log(`Card flipped. Remaining: ${next}`);
       setCardsRemaining(next);
 
       if (next <= 0) {
-        console.log('All cards revealed');
         router.push(`/deck`); // Go to deck page
       }
     }

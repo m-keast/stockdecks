@@ -9,10 +9,9 @@ import { removeCardById } from './storage'
 
 
 // Creates and returns a new card with stock data
-export async function getCard(): Promise<Card | null> {
-  console.log('[getCard] called');
+export async function getCard(special: boolean): Promise<Card | null> {
   try {
-    const stock = await getRandomStockData();
+    const stock = await getRandomStockData(special);
     if (!stock) return null;
 
     const price = await getPrice(stock.symbol);
@@ -31,7 +30,6 @@ export async function getCard(): Promise<Card | null> {
     };
 
     addCard(newCard);
-    console.log('New card added:', newCard);
 
     return newCard;
   } catch (err) {

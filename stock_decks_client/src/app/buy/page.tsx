@@ -14,8 +14,10 @@ const PACKS = [
     packType: 'basic',
     price: 5,
     numCards: 3,
-    description: '3 random common stock cards. Great for beginners.',
-    details: 'Contains 3 random stock cards from various sectors. No rares guaranteed.'
+    description: '3 random stock cards.',
+    details: 'Contains 3 random stock cards from various sectors. No rares guaranteed.',
+    expectedSpecials: .2,
+    specialsGuaranteed: 0
   },
   {
     id: 'epic',
@@ -23,8 +25,10 @@ const PACKS = [
     packType: 'epic',
     price: 15,
     numCards: 5,
-    description: '5 random stock cards. 1 rare guaranteed.',
-    details: 'Contains 5 cards with at least 1 rare (high-volume stock) guaranteed.'
+    description: '5 random stock cards.',
+    details: 'Contains 5 cards with a 50% chance of a rare S&P stock.',
+    expectedSpecials: .5,
+    specialsGuaranteed: 0
   },
   {
     id: 'legendary',
@@ -32,8 +36,10 @@ const PACKS = [
     packType: 'legendary',
     numCards: 7,
     price: 50,
-    description: '10 cards, high chance of rare stocks!',
-    details: 'Contains 10 cards with 3 guaranteed rares, and a chance for a special edition card.'
+    description: '7 cards, high chance of rare stocks!',
+    details: 'Contains 7 cards with a guaranteed rare, and a high chance of additional rares.',
+    expectedSpecials: 1,
+    specialsGuaranteed: 1
   }
 ];
 
@@ -42,7 +48,7 @@ export default function BuyPage() {
   const router = useRouter();
   const isOpeningRef = useRef(false);
 
-  const handlePurchase = (packType: string, numCards: number) => {
+  const handlePurchase = (packType: string, numCards: number, expectedSpecials: number, specialsGuaranteed: number) => {
     // Store the pack as "unopened" in localStorage
     console.log("Trying to purchase")
     if (isOpeningRef.current){
@@ -51,7 +57,7 @@ export default function BuyPage() {
     }
     isOpeningRef.current = true;
 
-    const newId = savePack(packType, numCards);
+    const newId = savePack(packType, numCards, expectedSpecials, specialsGuaranteed);
     // Redirect to the pack opening page
     router.push(`/pack/${newId}`);
   };
@@ -68,7 +74,8 @@ export default function BuyPage() {
           >
             <h2 className="text-lg font-semibold">{pack.name}</h2>
             <div className="m-4 flex justify-center pointer-events-none">
-              <Pack id={pack.id} timestamp={0} packType={pack.packType} numCards={pack.numCards}/>
+              <Pack id={pack.id} timestamp={0} packType={pack.packType} numCards={pack.numCards}
+              expectedSpecials={pack.expectedSpecials} specialsGuaranteed={pack.specialsGuaranteed}/>
             </div>
             <p className="font-semibold text-gray-700">${pack.price}</p>
             <p className="text-sm text-gray-500">{pack.description}</p>
@@ -82,7 +89,8 @@ export default function BuyPage() {
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
             <h2 className="text-xl font-bold mb-2">{selectedPack.name}</h2>
             <div className='pointer-events-none flex justify-center m-4'>
-              <Pack id={selectedPack.id} timestamp={0} packType={selectedPack.packType} numCards={selectedPack.numCards} />
+              <Pack id={selectedPack.id} timestamp={0} packType={selectedPack.packType} numCards={selectedPack.numCards}
+              specialsGuaranteed={selectedPack.specialsGuaranteed} expectedSpecials={selectedPack.expectedSpecials}/>
             </div>
             <p className="mb-4">{selectedPack.details}</p>
             <p className="mb-4 font-semibold">Price: ${selectedPack.price}</p>
@@ -95,7 +103,7 @@ export default function BuyPage() {
               </button>
               <button
                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                onClick={() => handlePurchase(selectedPack.packType, selectedPack.numCards)}
+                onClick={() => handlePurchase(selectedPack.packType, selectedPack.numCards, selectedPack.expectedSpecials, selectedPack.specialsGuaranteed)}
               >
                 Confirm Purchase
               </button>
