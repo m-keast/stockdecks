@@ -39,7 +39,7 @@ const PACKS = [
     description: '7 cards, high chance of rare stocks!',
     details: 'Contains 7 cards with a guaranteed rare, and a high chance of additional rares.',
     expectedSpecials: 1,
-    specialsGuaranteed: 1
+    specialsGuaranteed: 7
   }
 ];
 
