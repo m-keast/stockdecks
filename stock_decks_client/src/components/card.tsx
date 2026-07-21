@@ -1,6 +1,4 @@
 // Card component and styling
-
-import Image from 'next/image';
 import { getSectorColor } from '../lib/cardstyle';
 import { Card } from '../lib/definitions'; // <-- Import shared Card type
 import { motion } from 'framer-motion';
@@ -33,8 +31,8 @@ export default function CardComponent({
         flex-shrink-0 border-[5px] hover:shadow-xl select-none ${borderColor} ${backgroundColor}
         ${card.tags.length > 0 ? ` bg-linear-to-r ${shinyBg}` : `${backgroundColor}` }`
       }
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      //whileHover={{ scale: 1.05 }}
+      
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       style={{ transformPerspective: 1200, ...style }}
     >
@@ -62,13 +60,14 @@ export default function CardComponent({
             src={`/data/sectorIcons/${card.sector}.png`}
             alt={card.sector}
             className="w-6 h-6 object-contain"
+            draggable = "false"
           />
         </div>
       </div>
 
       {/* Company Image */}
       <div className="w-full flex h-[150px] items-center justify-center flex-shrink-0">
-        <img src={card.imgurl} alt={card.symbol} className="w-full h-full object-contain" />
+        <img src={card.imgurl} alt={card.symbol} className="w-full h-full object-contain" draggable = "false"/>
       </div>
 
       {/* Name */}

@@ -87,12 +87,13 @@ function SectorGroup({
             exit={{ opacity: 0 }}
           >
             {cards.map((card) => (
-              <CardComponent
-                key={card.id}
-                card={card}
-                onClick={() => onCardClick(card)}
-                style={selectedCardId === card.id ? { visibility: 'hidden' } : undefined}
-              />
+              <motion.div key={card.id} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <CardComponent
+                  card={card}
+                  onClick={() => onCardClick(card)}
+                  style={selectedCardId === card.id ? { visibility: 'hidden' } : undefined}
+                />
+              </motion.div>
             ))}
           </motion.div>
         )}
@@ -193,15 +194,17 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId }: DeckPr
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              
             >
               <div className="flex flex-wrap gap-4 px-8">
                 {cards.map((card) => (
-                  <CardComponent
-                    key={card.id}
-                    card={card}
-                    onClick={() => setSelectedCard(card)}
-                    style={selectedCard?.id === card.id ? { visibility: 'hidden' } : undefined}
-                  />
+                  <motion.div key={card.id} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <CardComponent
+                      card={card}
+                      onClick={() => setSelectedCard(card)}
+                      style={selectedCard?.id === card.id ? { visibility: 'hidden' } : undefined}
+                    />
+                  </motion.div>
                 ))}
               </div>
             </motion.div>

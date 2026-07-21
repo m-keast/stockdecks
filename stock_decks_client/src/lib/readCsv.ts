@@ -18,7 +18,7 @@ export type StockRecord = {
 };
 
 
-// Returns a random stock from the CSV file
+// Returns a random stock from the CSV file, from the pool with tags if special is true
 export function readRandomStock(special: boolean): Promise<StockRecord> {
   return new Promise((resolve, reject) => {
     const results: StockRecord[] = [];
@@ -41,11 +41,36 @@ export function readRandomStock(special: boolean): Promise<StockRecord> {
       })
       .on('end', () => {
         const pool = special
-          ? results.filter((r) => r.tags.length > 0)   // tagged pool
-          : results.filter((r) => r.tags.length === 0); // untagged pool
+          ? results.filter((r) => r.tags.length > 0)   // tags pool
+          : results.filter((r) => r.tags.length === 0); // no tags pool
         if (pool.length === 0) return reject(new Error('No matching stocks'));
         resolve(pool[Math.floor(Math.random() * pool.length)]);
       })
+      .on('error', reject);
+  });
+}
+
+
+
+//Function to help testing page test-cards. Remove along with app/test-cards and api/test
+export function readAllTaggedStocks(tag = 'sp'): Promise<StockRecord[]> {
+  return new Promise((resolve, reject) => {
+    const results: StockRecord[] = [];
+    const csvPath = path.join(process.cwd(), 'public', 'data', 'companies.csv');
+    fs.createReadStream(csvPath)
+      .pipe(csv())
+      .on('data', (data) => {
+        const symbol = data['Symbol'];
+        const stockname = data['Trimmed Name'];
+        const sector = data['Sector'];
+        const description = data['Description'];
+        const imgurl = data['Image_URL'];
+        const tags = (data['Tags'] || '').split(' ').filter(Boolean);
+        if (symbol && stockname && sector && description && imgurl) {
+          results.push({ symbol, stockname, sector, description, imgurl, tags });
+        }
+      })
+      .on('end', () => resolve(results))
       .on('error', reject);
   });
 }
