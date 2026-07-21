@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { getCard} from '../../../lib/cards';
 import type { Card } from '../../../lib/definitions';
 import CardComponent from '../../../components/card';
@@ -129,33 +129,95 @@ export default function PackOpenPage() {
 
             const offset = position * 12 - ((remaining - 1) * 12) / 2;
             const rotation = position * 2;
+            const isTop = position === 0;
 
             return (
               <motion.div
                 key={card.id}
-                className="absolute left-1/2 top-1/2 w-[220px] h-[300px] origin-center"
+                className={`absolute left-1/2 top-1/2 w-[220px] h-[300px] -ml-[110px] -mt-[150px] ${isTop ? '' : 'pointer-events-none'}`}
                 style={{ zIndex: cards.length - index }}
                 initial={false}
-                animate={{
-                  x: '-50%',
-                  y: '-50%',
-                  rotateZ: rotation,
-                  translateX: offset,
-                }}
-                whileTap={{ scale: 0.97 }}
+                animate={{ x: offset, rotate: rotation }}
                 transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-                onClick={() => handleSlide(index)}
               >
-                <CardComponent
-                  card={card}
-                  //className="w-full h-full"
-                  //isNew={true}
-                />
+                {isTop ? (
+                  <TopCard card={card} onDismiss={() => handleSlide(index)} />
+                ) : (
+                  <CardComponent card={card} />
+                )}
               </motion.div>
             );
           })}
         </div>
       )}
     </div>
+  );
+}
+
+// The top card in the stack: draggable to the left along an arc (derived from drag
+// distance, not raw pointer position, so a click and a drag animate identically).
+// Any release except returning ~back to the start commits to falling off screen.
+function TopCard({ card, onDismiss }: { card: Card; onDismiss: () => void }) {
+  // drag="x" mutates this value directly, so it must be passed as `x` itself below —
+  // not wrapped in a derived useTransform — or the drag gesture silently controls a
+  // disconnected value instead of this one, leaving the arc (and the release threshold
+  // check, which reads this same value) frozen at 0.
+  const dragX = useMotionValue(0);
+  const y = useTransform(dragX, (v) => Math.min(Math.pow(Math.max(-v, 0) / 14, 1.6), 320));
+  const rotate = useTransform(dragX, (v) => v * 0.12);
+  const opacity = useTransform(dragX, (v) => (v < -500 ? Math.max(0, 1 - (-v - 500) / 250) : 1));
+  const [isFalling, setIsFalling] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const wasDragging = useRef(false);
+
+  const fallOff = () => {
+    if (isFalling) return;
+    setIsFalling(true);
+    const target = -(typeof window !== 'undefined' ? window.innerWidth : 800) - 300;
+    animate(dragX, target, {
+      type: 'tween',
+      duration: 0.5,
+      ease: 'easeIn',
+      onComplete: onDismiss,
+    });
+  };
+
+  const handleDragEnd = () => {
+    if (isFalling) return;
+    setIsHovered(false);
+    console.log(`dragX value: ${dragX.get()}`)
+    if (dragX.get() > -30) {
+      animate(dragX, 0, { type: 'spring', stiffness: 400, damping: 30 });
+    } else {
+      fallOff();
+    }
+  };
+
+  return (
+    <motion.div
+      className="w-full h-full cursor-grab active:cursor-grabbing"
+      style={{ x: dragX, y, rotate, opacity }}
+      drag={isFalling ? false : 'x'}
+      dragConstraints={{ left: -400, right: 0 }}
+      dragElastic={0.15}
+      dragMomentum={false}
+      onDragStart={() => { wasDragging.current = true; }}
+      onDragEnd={handleDragEnd}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      animate={{ scale: isHovered ? 1.05 : 1 }}
+      onTap={() => {
+        setIsHovered(false);
+        if (wasDragging.current) {
+          wasDragging.current = false;
+          return;
+        }
+        fallOff();
+        console.log("onTap triggered");
+      }
+      }
+    >
+      <CardComponent card={card} />
+    </motion.div>
   );
 }
