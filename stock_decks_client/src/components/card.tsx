@@ -1,6 +1,4 @@
 // Card component and styling
-
-import Image from 'next/image';
 import { getSectorColor } from '../lib/cardstyle';
 import { Card } from '../lib/definitions'; // <-- Import shared Card type
 import { motion } from 'framer-motion';

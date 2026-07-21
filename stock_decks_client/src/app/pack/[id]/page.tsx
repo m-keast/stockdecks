@@ -201,7 +201,7 @@ function TopCard({ card, onDismiss }: { card: Card; onDismiss: () => void }) {
       dragConstraints={{ left: -400, right: 0 }}
       dragElastic={0.15}
       dragMomentum={false}
-      onDragStart={() => { wasDragging.current = true; }}
+      onDragStart={() => { wasDragging.current = true; setIsHovered(true); }}
       onDragEnd={handleDragEnd}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
