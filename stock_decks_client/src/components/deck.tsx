@@ -16,10 +16,22 @@ interface DeckProps {
   collapsed: boolean;
   onExpand: () => void;
   openCardId?: string | null;
+  // Bumped by the parent to force a fresh read from storage (e.g. after "mark all as seen").
+  refreshKey?: number;
+  // Called whenever a card's seen state changes so the parent can refresh derived UI.
+  onCardSeen?: () => void;
 }
 
 const STACK_COUNT = 5;
 const STACK_OFFSET = 4;
+
+// Marks every stored card as seen. Loads from storage itself so callers
+// (e.g. the toolbar button in page.tsx) don't need to hold the card array.
+export function markAllAsSeen() {
+  loadCards().forEach((card) => {
+    if (card.isNew) updateStoredCard(card.id, { isNew: false });
+  });
+}
 
 function SectorGroup({
   sector,
@@ -102,8 +114,11 @@ function SectorGroup({
   );
 }
 
-export default function Deck({ sortBy, collapsed, onExpand, openCardId }: DeckProps) {
+export default function Deck({ sortBy, collapsed, onExpand, openCardId, refreshKey, onCardSeen }: DeckProps) {
   const router = useRouter();
+  // Re-reads storage on every render; referencing refreshKey ties fresh reads
+  // to the parent bumping it after a storage mutation.
+  void refreshKey;
   const rawCards = loadCards();
   const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
 
@@ -128,7 +143,10 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId }: DeckPr
 
   const handleClose = () => {
     if (!selectedCard) return;
-    updateStoredCard(selectedCard.id, { isNew: false });
+    if (selectedCard.isNew) {
+      updateStoredCard(selectedCard.id, { isNew: false });
+      onCardSeen?.();
+    }
     setSelectedCard(null);
   };
 
