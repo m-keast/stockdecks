@@ -26,6 +26,10 @@ export default function PackOpenPage() {
   const [flipped, setFlipped] = useState<boolean[]>([]);
   const [isOpening, setIsOpening] = useState(false);
   const isOpeningRef = useRef(false);
+  // Index of the card currently falling off, or null. Set the instant fallOff
+  // fires so the remaining cards recenter immediately instead of waiting for the
+  // fall animation to finish.
+  const [fallingIndex, setFallingIndex] = useState<number | null>(null);
 
   const openPack = async () => {
     if (isOpeningRef.current) return;
@@ -93,6 +97,10 @@ export default function PackOpenPage() {
     if (!updated[index]) {
       updated[index] = true;
       setFlipped(updated);
+      // The card is now flipped, so revealedCount covers it; clear the falling
+      // marker. The recentered layout stays put (no jump) since revealedCount
+      // now equals what fallingIndex was standing in for.
+      setFallingIndex(null);
 
       const next = cardsRemaining - 1;
       setCardsRemaining(next);
@@ -121,15 +129,21 @@ export default function PackOpenPage() {
       ) : (
         <div className="relative w-[260px] h-[320px] mt-8">
           {cards.map((card, index) => {
-            const revealedCount = flipped.filter(Boolean).length;
-            const remaining = cards.length - revealedCount;
-            const position = index - revealedCount;
-
             if (flipped[index]) return null;
+
+            const revealedCount = flipped.filter(Boolean).length;
+            const isFalling = index === fallingIndex;
+            const isTop = index === revealedCount;
+
+            // While a card is falling off, lay the others out as if it's already
+            // gone so they slide to their recentered positions right away. The
+            // falling card keeps its own top slot (it flies off via its drag value).
+            const layoutRevealed = revealedCount + (fallingIndex !== null && !isFalling ? 1 : 0);
+            const position = index - layoutRevealed;
+            const remaining = cards.length - layoutRevealed;
 
             const offset = position * 12 - ((remaining - 1) * 12) / 2;
             const rotation = position * 2;
-            const isTop = position === 0;
 
             return (
               <motion.div
@@ -141,7 +155,11 @@ export default function PackOpenPage() {
                 transition={{ type: 'spring', stiffness: 200, damping: 20 }}
               >
                 {isTop ? (
-                  <TopCard card={card} onDismiss={() => handleSlide(index)} />
+                  <TopCard
+                    card={card}
+                    onDismiss={() => handleSlide(index)}
+                    onFallStart={() => setFallingIndex(index)}
+                  />
                 ) : (
                   <CardComponent card={card} />
                 )}
@@ -157,11 +175,8 @@ export default function PackOpenPage() {
 // The top card in the stack: draggable to the left along an arc (derived from drag
 // distance, not raw pointer position, so a click and a drag animate identically).
 // Any release except returning ~back to the start commits to falling off screen.
-function TopCard({ card, onDismiss }: { card: Card; onDismiss: () => void }) {
-  // drag="x" mutates this value directly, so it must be passed as `x` itself below —
-  // not wrapped in a derived useTransform — or the drag gesture silently controls a
-  // disconnected value instead of this one, leaving the arc (and the release threshold
-  // check, which reads this same value) frozen at 0.
+function TopCard({ card, onDismiss, onFallStart }: { card: Card; onDismiss: () => void; onFallStart: () => void }) {
+
   const dragX = useMotionValue(0);
   const y = useTransform(dragX, (v) => Math.min(Math.pow(Math.max(-v, 0) / 14, 1.6), 320));
   const rotate = useTransform(dragX, (v) => v * 0.12);
@@ -173,6 +188,7 @@ function TopCard({ card, onDismiss }: { card: Card; onDismiss: () => void }) {
   const fallOff = () => {
     if (isFalling) return;
     setIsFalling(true);
+    onFallStart(); // recenter the remaining stack immediately, before the fall completes
     const target = -(typeof window !== 'undefined' ? window.innerWidth : 800) - 300;
     animate(dragX, target, {
       type: 'tween',

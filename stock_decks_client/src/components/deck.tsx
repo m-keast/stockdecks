@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { loadCards } from '../lib/storage';
 import CardComponent from '../components/card';
 import CardBack from '../components/cardBack';
@@ -23,7 +23,17 @@ interface DeckProps {
 }
 
 const STACK_COUNT = 5;
-const STACK_OFFSET = 4;
+
+// Full-deck collapsed stack (non-sector view).
+const DECK_STACK_SPREAD = 10;        // base horizontal peek; sqrt(i) => later cards stick out less
+const DECK_STACK_SPREAD_HOVER = 20;  // wider fan on hover
+
+// Progressive overlap: each card's horizontal offset grows with sqrt(i), so the
+// gap between successive cards shrinks the deeper you go into the stack.
+function deckStackX(i: number, hovered: boolean) {
+  const spread = hovered ? DECK_STACK_SPREAD_HOVER : DECK_STACK_SPREAD;
+  return Math.max(spread * i-(i*i),0);
+}
 
 // Marks every stored card as seen. Loads from storage itself so callers
 // (e.g. the toolbar button in page.tsx) don't need to hold the card array.
@@ -45,6 +55,14 @@ function SectorGroup({
   selectedCardId?: string | null;
 }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [stackHovered, setStackHovered] = useState(false);
+  const collapsedRef = useRef(collapsed);
+  collapsedRef.current = collapsed;
+
+  const handleCardClick = (card: CardType) => {
+    if (collapsedRef.current) return;
+    onCardClick(card);
+  };
 
   return (
     <div className="mb-8">
@@ -66,8 +84,11 @@ function SectorGroup({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            onMouseEnter={() => setStackHovered(true)}
+            onMouseLeave={() => setStackHovered(false)}
             onClick={(e) =>{
               e.stopPropagation();
+              setStackHovered(false);
               setCollapsed(false);
             }}
           >
@@ -75,16 +96,13 @@ function SectorGroup({
               <motion.div
                 key={card.id}
                 className="absolute pointer-events-none"
-                animate={{
-                  x: i * STACK_OFFSET,
-                  rotate: (i) * .5,
-                  zIndex: STACK_COUNT - i,
-                }}
-                transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                style={{ transformOrigin: 'bottom center', zIndex: STACK_COUNT - i }}
+                animate={{ x: deckStackX(i, stackHovered) }}
+                transition={{ type: 'spring', stiffness: 200, damping: 25 }}
               >
                 <CardComponent
                   card={card}
-                  onClick={() => onCardClick(card)}
+                  onClick={() => handleCardClick(card)}
                   style={selectedCardId === card.id ? { visibility: 'hidden' } : undefined}
                 />
               </motion.div>
@@ -102,7 +120,7 @@ function SectorGroup({
               <motion.div key={card.id} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <CardComponent
                   card={card}
-                  onClick={() => onCardClick(card)}
+                  onClick={() => handleCardClick(card)}
                   style={selectedCardId === card.id ? { visibility: 'hidden' } : undefined}
                 />
               </motion.div>
@@ -121,6 +139,19 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, refreshK
   void refreshKey;
   const rawCards = loadCards();
   const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
+  const [stackHovered, setStackHovered] = useState(false);
+
+  // Mirror `collapsed` into a ref so the guard below sees the current value even
+  // from a card element that's frozen mid-exit by AnimatePresence (those elements
+  // keep the props/closures they had when collapsed was still false).
+  const collapsedRef = useRef(collapsed);
+  collapsedRef.current = collapsed;
+
+
+  const openCard = (card: CardType) => {
+    if (collapsedRef.current) return;
+    setSelectedCard(card);
+  };
 
   useEffect(() => {
     if (openCardId && rawCards.length > 0) {
@@ -177,25 +208,26 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, refreshK
           {collapsed ? (
             <motion.div
               key="stack"
-              className="relative px-8 cursor-pointer"
-              style={{ width: 220, height: 320 }}
+              className="relative mx-8 cursor-pointer"
+              style={{ width: 320, height: 300 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              onMouseEnter={() => setStackHovered(true)}
+              onMouseLeave={() => setStackHovered(false)}
               onClick={(e) => {
                 e.stopPropagation();
                 onExpand();
+                setStackHovered(false);
               }}
             >
-              {cards.slice(0, STACK_COUNT).map((card, i) => (
+              {cards.map((card, i) => (
                 <motion.div
                   key={card.id}
                   className="absolute pointer-events-none"
-                  animate={{
-                    x: i * STACK_OFFSET * 2,
-                    zIndex: STACK_COUNT - i,
-                  }}
-                  transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                  style={{ transformOrigin: 'bottom center', zIndex: cards.length - i }}
+                  animate={{ x: deckStackX(i, stackHovered) }}
+                  transition={{ type: 'spring', stiffness: 200, damping: 25 }}
                 >
                   <CardComponent
                     card={card}
@@ -212,14 +244,17 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, refreshK
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              
             >
               <div className="flex flex-wrap gap-4 px-8">
                 {cards.map((card) => (
-                  <motion.div key={card.id} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <motion.div
+                    key={card.id}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
                     <CardComponent
                       card={card}
-                      onClick={() => setSelectedCard(card)}
+                      onClick={() => openCard(card)}
                       style={selectedCard?.id === card.id ? { visibility: 'hidden' } : undefined}
                     />
                   </motion.div>
@@ -230,7 +265,7 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, refreshK
         </AnimatePresence>
       )}
 
-      <AnimatePresence>
+      <AnimatePresence >
         {selectedCard && (
           <CardBack key={selectedCard.id} card={selectedCard} onClose={handleClose} />
         )}
