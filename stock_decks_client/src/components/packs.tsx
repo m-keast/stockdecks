@@ -25,7 +25,7 @@ export default function Packs() {
     <div className="deck-container">
       <div id="card-container" className="flex justify-center flex-wrap gap-4">
         {packs.length === 0 ? (
-          <p>No unopened packs.</p>
+          <p></p>
         ) : (
           packs.map((pack) => (
             <Pack key={pack.id} id={pack.id} timestamp={pack.timestamp} packType={pack.packType} numCards={pack.numCards}

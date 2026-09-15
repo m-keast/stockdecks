@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, CSSProperties } from 'react';
 import { loadCards } from '../lib/storage';
 import CardComponent from '../components/card';
 import CardBack from '../components/cardBack';
@@ -16,6 +16,12 @@ interface DeckProps {
   collapsed: boolean;
   onExpand: () => void;
   openCardId?: string | null;
+  // Sell mode: when active, clicking a card adds it to the sell list (via
+  // onToggleSell) instead of opening the card back. sellIds are the ids
+  // currently selected, used to highlight them.
+  sellMode?: boolean;
+  sellIds?: string[];
+  onToggleSell?: (card: CardType) => void;
 }
 
 const STACK_COUNT = 5;
@@ -25,12 +31,12 @@ function SectorGroup({
   sector,
   cards,
   onCardClick,
-  selectedCardId,
+  getCardStyle,
 }: {
   sector: string;
   cards: CardType[];
   onCardClick: (card: CardType) => void;
-  selectedCardId?: string | null;
+  getCardStyle: (card: CardType) => CSSProperties | undefined;
 }) {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -73,7 +79,7 @@ function SectorGroup({
                 <CardComponent
                   card={card}
                   onClick={() => onCardClick(card)}
-                  style={selectedCardId === card.id ? { visibility: 'hidden' } : undefined}
+                  style={getCardStyle(card)}
                 />
               </motion.div>
             ))}
@@ -91,7 +97,7 @@ function SectorGroup({
                 <CardComponent
                   card={card}
                   onClick={() => onCardClick(card)}
-                  style={selectedCardId === card.id ? { visibility: 'hidden' } : undefined}
+                  style={getCardStyle(card)}
                 />
               </motion.div>
             ))}
@@ -102,10 +108,30 @@ function SectorGroup({
   );
 }
 
-export default function Deck({ sortBy, collapsed, onExpand, openCardId }: DeckProps) {
+export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode, sellIds, onToggleSell }: DeckProps) {
   const router = useRouter();
   const rawCards = loadCards();
   const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
+
+  // In sell mode a click toggles the card in the sell list; otherwise it opens
+  // the card back as usual.
+  const handleCardClick = (card: CardType) => {
+    if (sellMode) {
+      onToggleSell?.(card);
+      return;
+    }
+    setSelectedCard(card);
+  };
+
+  // Hide the card that's currently shown in the card back; highlight cards
+  // picked for sale.
+  const getCardStyle = (card: CardType): CSSProperties | undefined => {
+    if (selectedCard?.id === card.id) return { visibility: 'hidden' };
+    if (sellMode && sellIds?.includes(card.id)) {
+      return { outline: '4px solid #22c55e', outlineOffset: 2, borderRadius: '0.75rem' };
+    }
+    return undefined;
+  };
 
   useEffect(() => {
     if (openCardId && rawCards.length > 0) {
@@ -149,8 +175,8 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId }: DeckPr
               key={sector}
               sector={sector}
               cards={sectorCards}
-              onCardClick={setSelectedCard}
-              selectedCardId={selectedCard?.id}
+              onCardClick={handleCardClick}
+              getCardStyle={getCardStyle}
             />
           ))}
         </div>
@@ -181,8 +207,8 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId }: DeckPr
                 >
                   <CardComponent
                     card={card}
-                    onClick={() => setSelectedCard(card)}
-                    style={selectedCard?.id === card.id ? { visibility: 'hidden' } : undefined}
+                    onClick={() => handleCardClick(card)}
+                    style={getCardStyle(card)}
                   />
                 </motion.div>
               ))}
@@ -194,15 +220,15 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId }: DeckPr
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              
+
             >
               <div className="flex flex-wrap gap-4 px-8">
                 {cards.map((card) => (
                   <motion.div key={card.id} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                     <CardComponent
                       card={card}
-                      onClick={() => setSelectedCard(card)}
-                      style={selectedCard?.id === card.id ? { visibility: 'hidden' } : undefined}
+                      onClick={() => handleCardClick(card)}
+                      style={getCardStyle(card)}
                     />
                   </motion.div>
                 ))}
