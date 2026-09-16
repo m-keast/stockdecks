@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { SortBy } from '../../components/deck';
 import { useSearchParams } from 'next/navigation';
 import Pack from '../../components/packs';
 import SellPanel from '../../components/sellPanel';
+import { markAllAsSeen } from '../../components/deck';
 import { getEquity, sellCard } from '../../lib/wallet';
-import { loadBalance } from '../../lib/storage';
+import { loadBalance, loadCards } from '../../lib/storage';
 import { Card } from '../../lib/definitions';
 
 const Deck = dynamic(() => import('../../components/deck'), { ssr: false });
@@ -19,8 +20,8 @@ function MyDeckContent() {
   const [sellCards, setSellCards] = useState<Card[]>([]);
   const searchParams = useSearchParams();
   const openCardId = searchParams.get('openCard');
-  const totalEquity = getEquity();
-  const balance = loadBalance();
+  const totalEquity = Math.round((getEquity() + Number.EPSILON) * 100) / 100;
+  const balance = Math.round((loadBalance() + Number.EPSILON) * 100) / 100;
 
   // Toggle a card in/out of the sell list (clicking a deck card while the
   // panel is open).
@@ -43,6 +44,22 @@ function MyDeckContent() {
     // getEquity()/loadBalance() above recompute and the Deck re-reads storage.
     setSellCards([]);
     setSellOpen(false);
+  };
+
+  // Bumped after any change to cards' seen state; drives the Deck refresh
+  // and re-derives hasNewCards below.
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [hasNewCards, setHasNewCards] = useState(false);
+
+  // loadCards() reads localStorage, so keep it client-only (starts false on the
+  // server) to avoid a hydration mismatch. Re-runs whenever refreshKey changes.
+  useEffect(() => {
+    setHasNewCards(loadCards().some((card) => card.isNew));
+  }, [refreshKey]);
+
+  const handleMarkAllAsSeen = () => {
+    markAllAsSeen();
+    setRefreshKey((k) => k + 1);
   };
 
   return (
@@ -83,8 +100,15 @@ function MyDeckContent() {
           >
             Sell Cards
           </button>
+          {hasNewCards && (
+            <button
+              onClick={handleMarkAllAsSeen}
+              className="text-sm px-3 py-1.5 border rounded hover:bg-gray-100"
+            >
+              Mark all as seen
+            </button>
+          )}
         </div>
-
 
       </div>
 
@@ -96,6 +120,8 @@ function MyDeckContent() {
         sellMode={sellOpen}
         sellIds={sellCards.map((c) => c.id)}
         onToggleSell={toggleSellCard}
+        refreshKey={refreshKey}
+        onCardSeen={() => setRefreshKey((k) => k + 1)}
       />
 
       <SellPanel
@@ -116,3 +142,4 @@ export default function MyDeckPage() {
     </Suspense>
   );
 }
+
