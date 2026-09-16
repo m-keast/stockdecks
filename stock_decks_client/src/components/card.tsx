@@ -52,13 +52,14 @@ export default function CardComponent({
           {card.tags.length > 0 && (
             <div>
               {getTagIcons(card.tags).map((icon) => (
-                <img key={icon} src={icon} alt="" className="w-6 h-6 object-contain drop-shadow mr-2" />
+                <img key={icon} src={icon} alt="" loading="lazy" className="w-6 h-6 object-contain drop-shadow mr-2" />
               ))}
             </div>
           )}
           <img
             src={`/data/sectorIcons/${card.sector}.png`}
             alt={card.sector}
+            loading="lazy"
             className="w-6 h-6 object-contain"
             draggable = "false"
           />
@@ -67,7 +68,7 @@ export default function CardComponent({
 
       {/* Company Image */}
       <div className="w-full flex h-[150px] items-center justify-center flex-shrink-0">
-        <img src={card.imgurl} alt={card.symbol} className="w-full h-full object-contain" draggable = "false"/>
+        <img src={card.imgurl} alt={card.symbol} loading="lazy" className="w-full h-full object-contain" draggable = "false"/>
       </div>
 
       {/* Name */}
