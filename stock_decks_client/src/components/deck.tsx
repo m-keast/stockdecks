@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, CSSProperties } from 'react';
 import { loadCards } from '../lib/storage';
 import CardComponent from '../components/card';
 import CardBack from '../components/cardBack';
@@ -16,10 +17,12 @@ interface DeckProps {
   collapsed: boolean;
   onExpand: () => void;
   openCardId?: string | null;
-  // Bumped by the parent to force a fresh read from storage (e.g. after "mark all as seen").
-  refreshKey?: number;
-  // Called whenever a card's seen state changes so the parent can refresh derived UI.
-  onCardSeen?: () => void;
+  // Sell mode: when active, clicking a card adds it to the sell list (via
+  // onToggleSell) instead of opening the card back. sellIds are the ids
+  // currently selected, used to highlight them.
+  sellMode?: boolean;
+  sellIds?: string[];
+  onToggleSell?: (card: CardType) => void;
 }
 
 const STACK_COUNT = 5;
@@ -47,12 +50,12 @@ function SectorGroup({
   sector,
   cards,
   onCardClick,
-  selectedCardId,
+  getCardStyle,
 }: {
   sector: string;
   cards: CardType[];
   onCardClick: (card: CardType) => void;
-  selectedCardId?: string | null;
+  getCardStyle: (card: CardType) => CSSProperties | undefined;
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const [stackHovered, setStackHovered] = useState(false);
@@ -132,7 +135,7 @@ function SectorGroup({
   );
 }
 
-export default function Deck({ sortBy, collapsed, onExpand, openCardId, refreshKey, onCardSeen }: DeckProps) {
+export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode, sellIds, onToggleSell }: DeckProps) {
   const router = useRouter();
   // Re-reads storage on every render; referencing refreshKey ties fresh reads
   // to the parent bumping it after a storage mutation.
@@ -151,6 +154,26 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, refreshK
   const openCard = (card: CardType) => {
     if (collapsedRef.current) return;
     setSelectedCard(card);
+  };
+
+  // In sell mode a click toggles the card in the sell list; otherwise it opens
+  // the card back as usual.
+  const handleCardClick = (card: CardType) => {
+    if (sellMode) {
+      onToggleSell?.(card);
+      return;
+    }
+    setSelectedCard(card);
+  };
+
+  // Hide the card that's currently shown in the card back; highlight cards
+  // picked for sale.
+  const getCardStyle = (card: CardType): CSSProperties | undefined => {
+    if (selectedCard?.id === card.id) return { visibility: 'hidden' };
+    if (sellMode && sellIds?.includes(card.id)) {
+      return { outline: '4px solid #22c55e', outlineOffset: 2, borderRadius: '0.75rem' };
+    }
+    return undefined;
   };
 
   useEffect(() => {
@@ -198,8 +221,8 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, refreshK
               key={sector}
               sector={sector}
               cards={sectorCards}
-              onCardClick={setSelectedCard}
-              selectedCardId={selectedCard?.id}
+              onCardClick={handleCardClick}
+              getCardStyle={getCardStyle}
             />
           ))}
         </div>
@@ -231,8 +254,8 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, refreshK
                 >
                   <CardComponent
                     card={card}
-                    onClick={() => setSelectedCard(card)}
-                    style={selectedCard?.id === card.id ? { visibility: 'hidden' } : undefined}
+                    onClick={() => handleCardClick(card)}
+                    style={getCardStyle(card)}
                   />
                 </motion.div>
               ))}

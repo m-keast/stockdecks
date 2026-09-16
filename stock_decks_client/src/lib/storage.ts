@@ -6,6 +6,7 @@ import { Card } from '../lib/definitions';
 
 const STORAGE_KEY = 'userCards';
 const PACKS_KEY = 'unopenedPacks';
+const BALANCE_KEY = 'userBalance';
 
 //Loads cards from localStorage
 export function loadCards(): Card[] {
@@ -55,6 +56,8 @@ export function removeCardById(targetId: string): void{
   }
 }
 
+
+//Updates fields on stored cards
 export function updateStoredCard(
   cardId: string,
   updates: Partial<Card>
@@ -99,4 +102,21 @@ export function savePack(packType: string, numCards: number, expectedSpecials: n
   unopened.push({ id, timestamp: Date.now(), packType, numCards, expectedSpecials, specialsGuaranteed });
   localStorage.setItem('unopenedPacks', JSON.stringify(unopened));
   return id;
+}
+
+export function loadBalance(): number {
+  if (typeof window === 'undefined') return 0;
+  const raw = localStorage.getItem(BALANCE_KEY);
+  return raw !== null ? Number(raw) : 0;
+}
+
+export function saveBalance(b: number): void{
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(BALANCE_KEY, String(b));
+}
+
+export function adjustBalance(delta: number): number {
+  const newBalance = loadBalance() + delta;
+  saveBalance(newBalance);
+  return newBalance;
 }
