@@ -8,9 +8,10 @@ import { getTagIcons } from '../lib/cardstyle';
 interface CardBackProps {
   card: Card;
   onClose: () => void;
+  onSellCard?: (card: Card) => void;
 }
 
-export default function CardBack({ card, onClose }: CardBackProps) {
+export default function CardBack({ card, onClose, onSellCard }: CardBackProps) {
   const [borderColor, backgroundColor, shinyBg] = getSectorColor(card.sector) || ['#000', '#f0f0f0'];
   return (
     <div
@@ -49,6 +50,12 @@ export default function CardBack({ card, onClose }: CardBackProps) {
             <p>Member of the S&P 500 index</p>
           </div>
         )}
+        <button
+          onClick={() => onSellCard?.(card)}
+          className="text-sm px-3 py-1.5 border rounded hover:bg-gray-100 cursor-pointer"
+        >
+          Sell Card
+        </button>
       </motion.div>
     </div>
   );

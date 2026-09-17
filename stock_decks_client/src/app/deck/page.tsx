@@ -89,6 +89,14 @@ function MyDeckContent() {
               {collapsed ? 'Expand' : 'Collapse'}
             </button>
           )}
+          {hasNewCards && (
+            <button
+              onClick={handleMarkAllAsSeen}
+              className="text-sm px-3 py-1.5 border rounded hover:bg-gray-100"
+            >
+              Mark all as seen
+            </button>
+          )}
         </div>
         <div className="flex items-center gap-4 pr-30">
           {/* <> ELEMENTS FOR TOTAL EQUITY BALANCE AND SELL BUTTON */}
@@ -100,14 +108,6 @@ function MyDeckContent() {
           >
             Sell Cards
           </button>
-          {hasNewCards && (
-            <button
-              onClick={handleMarkAllAsSeen}
-              className="text-sm px-3 py-1.5 border rounded hover:bg-gray-100"
-            >
-              Mark all as seen
-            </button>
-          )}
         </div>
 
       </div>
@@ -120,6 +120,10 @@ function MyDeckContent() {
         sellMode={sellOpen}
         sellIds={sellCards.map((c) => c.id)}
         onToggleSell={toggleSellCard}
+        onSellCard={(card: Card) => {
+          setSellOpen(true);
+          toggleSellCard(card);
+        }}
         refreshKey={refreshKey}
         onCardSeen={() => setRefreshKey((k) => k + 1)}
       />

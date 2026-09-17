@@ -22,6 +22,7 @@ interface DeckProps {
   sellMode?: boolean;
   sellIds?: string[];
   onToggleSell?: (card: CardType) => void;
+  onSellCard?: (card: CardType) => void;
   // Bumped by the parent to force a fresh read from storage (e.g. after "mark all as seen").
   refreshKey?: number;
   // Called whenever a card's seen state changes so the parent can refresh derived UI.
@@ -31,11 +32,10 @@ interface DeckProps {
 const STACK_COUNT = 5;
 
 // Full-deck collapsed stack (non-sector view).
-const DECK_STACK_SPREAD = 10;        // base horizontal peek; sqrt(i) => later cards stick out less
+const DECK_STACK_SPREAD = 10;        // base horizontal spread
 const DECK_STACK_SPREAD_HOVER = 20;  // wider fan on hover
 
-// Progressive overlap: each card's horizontal offset grows with sqrt(i), so the
-// gap between successive cards shrinks the deeper you go into the stack.
+// gap between successive cards shrinks deeper into the stack.
 function deckStackX(i: number, hovered: boolean) {
   const spread = hovered ? DECK_STACK_SPREAD_HOVER : DECK_STACK_SPREAD;
   return Math.max(spread * i-(i*i),0);
@@ -138,7 +138,7 @@ function SectorGroup({
   );
 }
 
-export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode, sellIds, onToggleSell, refreshKey, onCardSeen }: DeckProps) {
+export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode, sellIds, onToggleSell, refreshKey, onCardSeen, onSellCard }: DeckProps) {
   const router = useRouter();
   // Re-reads storage on every render; referencing refreshKey ties fresh reads
   // to the parent bumping it after a storage mutation.
@@ -288,7 +288,7 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode
 
       <AnimatePresence>
         {selectedCard && (
-          <CardBack key={selectedCard.id} card={selectedCard} onClose={handleClose} />
+          <CardBack key={selectedCard.id} card={selectedCard} onClose={handleClose} onSellCard={onSellCard} />
         )}
       </AnimatePresence>
     </div>
