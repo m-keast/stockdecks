@@ -142,7 +142,6 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode
   const router = useRouter();
   // Re-reads storage on every render; referencing refreshKey ties fresh reads
   // to the parent bumping it after a storage mutation.
-  void refreshKey;
   const rawCards = loadCards();
   const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
   const [stackHovered, setStackHovered] = useState(false);
@@ -169,10 +168,17 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode
   const getCardStyle = (card: CardType): CSSProperties | undefined => {
     if (selectedCard?.id === card.id) return { visibility: 'hidden' };
     if (sellMode && sellIds?.includes(card.id)) {
-      return { outline: '4px solid #22c55e', outlineOffset: 2, borderRadius: '0.75rem' };
+      return { filter: 'grayscale(1)', scale: 0.9, opacity: 0.5, transition: 'filter 0.15s ease, opacity 0.15s ease'};
     }
     return undefined;
   };
+
+  //RefreshKey is updated when sale is confirmed in Deck/page. Check storage and close card if doesn't exist
+  useEffect(() => {
+    if (selectedCard && !loadCards().some((c) => c.id === selectedCard.id)){
+      setSelectedCard(null);
+    }
+  }, [refreshKey]);
 
   useEffect(() => {
     if (openCardId && rawCards.length > 0) {
@@ -266,7 +272,10 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <div className="flex flex-wrap gap-4 px-8">
+              <div
+                className="grid gap-4 px-8 justify-items-center w-full"
+                style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}
+              >
                 {cards.map((card) => (
                   <motion.div
                     key={card.id}

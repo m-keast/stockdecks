@@ -25,16 +25,17 @@ export default function SellPanel({ open, cards, onRemove, onClose, onConfirm }:
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed top-0 right-0 h-screen w-[340px] bg-white shadow-2xl z-50 flex flex-col border-l border-gray-200"
+          className="fixed top-16 bottom-0 right-0 h-screen-16
+           w-[340px] bg-white shadow-2xl z-50 flex flex-col border-l border-gray-200"
         >
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
             <h2 className="text-lg font-bold">Sell Cards</h2>
             <button
               onClick={onClose}
               aria-label="Close"
-              className="text-gray-500 hover:text-black text-2xl leading-none cursor-pointer"
+              className="text-gray-500 hover:text-black text-lg leading-none cursor-pointer"
             >
-              ×
+              Cancel
             </button>
           </div>
 
