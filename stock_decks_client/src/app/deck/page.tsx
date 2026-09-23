@@ -44,6 +44,7 @@ function MyDeckContent() {
     // getEquity()/loadBalance() above recompute and the Deck re-reads storage.
     setSellCards([]);
     setSellOpen(false);
+    setRefreshKey((k) => k + 1);
   };
 
   // Bumped after any change to cards' seen state; drives the Deck refresh
@@ -63,7 +64,7 @@ function MyDeckContent() {
   };
 
   return (
-    <div>
+    <div className={`transition-[margin] duration-300 ease-out ${sellOpen ? 'mr-[340px]' : 'mr-0'}`}>
       <h1 className="text-5xl font-bold mb-4 pt-8">My Deck</h1>
 
       <div className="mt-8">
@@ -89,23 +90,25 @@ function MyDeckContent() {
               {collapsed ? 'Expand' : 'Collapse'}
             </button>
           )}
-        </div>
-        <div className="flex items-center gap-4 pr-30">
-          {/* <> ELEMENTS FOR TOTAL EQUITY BALANCE AND SELL BUTTON */}
-          <div className="font-bold">Total Equity: ${totalEquity}</div>
-          <div className="font-bold">Balance: ${balance}</div>
-          <button
-            onClick={() => setSellOpen(true)}
-            className="text-sm px-3 py-1.5 border rounded hover:bg-gray-100 cursor-pointer"
-          >
-            Sell Cards
-          </button>
           {hasNewCards && (
             <button
               onClick={handleMarkAllAsSeen}
               className="text-sm px-3 py-1.5 border rounded hover:bg-gray-100"
             >
               Mark all as seen
+            </button>
+          )}
+        </div>
+        <div className="flex items-center gap-4">
+          {/* <> ELEMENTS FOR TOTAL EQUITY BALANCE AND SELL BUTTON */}
+          <div className="font-bold">Total Equity: ${totalEquity}</div>
+          <div className="font-bold">Balance: ${balance}</div>
+          {!sellOpen && (
+            <button
+              onClick={() => setSellOpen(true)}
+              className="text-sm px-3 py-1.5 border rounded hover:bg-gray-100 cursor-pointer"
+            >
+              Sell Cards
             </button>
           )}
         </div>
@@ -120,6 +123,10 @@ function MyDeckContent() {
         sellMode={sellOpen}
         sellIds={sellCards.map((c) => c.id)}
         onToggleSell={toggleSellCard}
+        onSellCard={(card: Card) => {
+          setSellOpen(true);
+          toggleSellCard(card);
+        }}
         refreshKey={refreshKey}
         onCardSeen={() => setRefreshKey((k) => k + 1)}
       />

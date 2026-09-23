@@ -8,9 +8,10 @@ import { getTagIcons } from '../lib/cardstyle';
 interface CardBackProps {
   card: Card;
   onClose: () => void;
+  onSellCard?: (card: Card) => void;
 }
 
-export default function CardBack({ card, onClose }: CardBackProps) {
+export default function CardBack({ card, onClose, onSellCard }: CardBackProps) {
   const [borderColor, backgroundColor, shinyBg] = getSectorColor(card.sector) || ['#000', '#f0f0f0'];
   return (
     <div
@@ -38,7 +39,17 @@ export default function CardBack({ card, onClose }: CardBackProps) {
         {/* Full info display */}
         <h2 className="text-xl font-bold mb-2">{card.name}</h2>
         <img src={card.imgurl} alt={card.symbol} className="w-full max-h-[250px] object-contain mb-3" />
-        <p><strong>Sector:</strong> {card.sector}</p>
+        <div className= "flex">
+          <span><strong>Sector:</strong></span>
+          <img
+            src={`/data/sectorIcons/${card.sector}.png`}
+            alt={card.sector}
+            loading="lazy"
+            className="w-6 h-6 object-contain -translate-y-[2px] ml-2 mr-2 "
+            draggable = "false"
+          />
+          <span>{card.sector}</span>
+        </div>
         <p><strong>Price:</strong> ${card.price.toFixed(2)}</p>
         <p className="mt-2 text-sm text-gray-600">{card.description}</p>
         {card.tags.length > 0 && (
@@ -49,6 +60,12 @@ export default function CardBack({ card, onClose }: CardBackProps) {
             <p>Member of the S&P 500 index</p>
           </div>
         )}
+        <button
+          onClick={() => onSellCard?.(card)}
+          className="text-sm px-3 py-1.5 border rounded hover:bg-gray-100 cursor-pointer"
+        >
+          Sell Card
+        </button>
       </motion.div>
     </div>
   );

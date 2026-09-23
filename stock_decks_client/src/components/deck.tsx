@@ -22,6 +22,7 @@ interface DeckProps {
   sellMode?: boolean;
   sellIds?: string[];
   onToggleSell?: (card: CardType) => void;
+  onSellCard?: (card: CardType) => void;
   // Bumped by the parent to force a fresh read from storage (e.g. after "mark all as seen").
   refreshKey?: number;
   // Called whenever a card's seen state changes so the parent can refresh derived UI.
@@ -31,11 +32,10 @@ interface DeckProps {
 const STACK_COUNT = 5;
 
 // Full-deck collapsed stack (non-sector view).
-const DECK_STACK_SPREAD = 10;        // base horizontal peek; sqrt(i) => later cards stick out less
+const DECK_STACK_SPREAD = 10;        // base horizontal spread
 const DECK_STACK_SPREAD_HOVER = 20;  // wider fan on hover
 
-// Progressive overlap: each card's horizontal offset grows with sqrt(i), so the
-// gap between successive cards shrinks the deeper you go into the stack.
+// gap between successive cards shrinks deeper into the stack.
 function deckStackX(i: number, hovered: boolean) {
   const spread = hovered ? DECK_STACK_SPREAD_HOVER : DECK_STACK_SPREAD;
   return Math.max(spread * i-(i*i),0);
@@ -138,11 +138,10 @@ function SectorGroup({
   );
 }
 
-export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode, sellIds, onToggleSell, refreshKey, onCardSeen }: DeckProps) {
+export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode, sellIds, onToggleSell, refreshKey, onCardSeen, onSellCard }: DeckProps) {
   const router = useRouter();
   // Re-reads storage on every render; referencing refreshKey ties fresh reads
   // to the parent bumping it after a storage mutation.
-  void refreshKey;
   const rawCards = loadCards();
   const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
   const [stackHovered, setStackHovered] = useState(false);
@@ -169,10 +168,17 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode
   const getCardStyle = (card: CardType): CSSProperties | undefined => {
     if (selectedCard?.id === card.id) return { visibility: 'hidden' };
     if (sellMode && sellIds?.includes(card.id)) {
-      return { outline: '4px solid #22c55e', outlineOffset: 2, borderRadius: '0.75rem' };
+      return { filter: 'grayscale(1)', scale: 0.9, opacity: 0.5, transition: 'filter 0.15s ease, opacity 0.15s ease'};
     }
     return undefined;
   };
+
+  //RefreshKey is updated when sale is confirmed in Deck/page. Check storage and close card if doesn't exist
+  useEffect(() => {
+    if (selectedCard && !loadCards().some((c) => c.id === selectedCard.id)){
+      setSelectedCard(null);
+    }
+  }, [refreshKey]);
 
   useEffect(() => {
     if (openCardId && rawCards.length > 0) {
@@ -266,7 +272,10 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <div className="flex flex-wrap gap-4 px-8">
+              <div
+                className="grid gap-4 px-8 justify-items-center w-full"
+                style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}
+              >
                 {cards.map((card) => (
                   <motion.div
                     key={card.id}
@@ -288,7 +297,7 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode
 
       <AnimatePresence>
         {selectedCard && (
-          <CardBack key={selectedCard.id} card={selectedCard} onClose={handleClose} />
+          <CardBack key={selectedCard.id} card={selectedCard} onClose={handleClose} onSellCard={onSellCard} />
         )}
       </AnimatePresence>
     </div>
