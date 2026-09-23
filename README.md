@@ -30,8 +30,6 @@ stockdecks/
 
 **Prerequisites:** Node 20+ and npm.
 
-### 1. Client (the game)
-
 ```bash
 cd stock_decks_client
 npm install
