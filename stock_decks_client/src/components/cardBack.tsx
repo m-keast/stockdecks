@@ -39,7 +39,17 @@ export default function CardBack({ card, onClose, onSellCard }: CardBackProps) {
         {/* Full info display */}
         <h2 className="text-xl font-bold mb-2">{card.name}</h2>
         <img src={card.imgurl} alt={card.symbol} className="w-full max-h-[250px] object-contain mb-3" />
-        <p><strong>Sector:</strong> {card.sector}</p>
+        <div className= "flex">
+          <span><strong>Sector:</strong></span>
+          <img
+            src={`/data/sectorIcons/${card.sector}.png`}
+            alt={card.sector}
+            loading="lazy"
+            className="w-6 h-6 object-contain -translate-y-[2px] ml-2 mr-2 "
+            draggable = "false"
+          />
+          <span>{card.sector}</span>
+        </div>
         <p><strong>Price:</strong> ${card.price.toFixed(2)}</p>
         <p className="mt-2 text-sm text-gray-600">{card.description}</p>
         {card.tags.length > 0 && (
