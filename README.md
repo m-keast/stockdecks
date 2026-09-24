@@ -5,6 +5,7 @@ build a deck of real companies. Each card is an actual stock with company info a
 Track your portfolio's equity and cash balance, and sell stock cards for money to buy more packs.
 
 <img width="1876" height="848" alt="image" src="https://github.com/user-attachments/assets/9ef449f1-c629-4a5b-b294-42be7a9f5914" />
+
 > Personal in-progress project on a modern web stack.
 
 ## Tech stack
