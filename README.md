@@ -4,6 +4,8 @@ Welcome to StockDecks, A sandbox stock trading pack opening game. Buy and open p
 build a deck of real companies. Each card is an actual stock with company info and current prices.
 Track your portfolio's equity and cash balance, and sell stock cards for money to buy more packs.
 
+>Personal in-progress project on a modern web stack.
+
 <img width="1876" height="848" alt="image" src="https://github.com/user-attachments/assets/9ef449f1-c629-4a5b-b294-42be7a9f5914" />
 
 
@@ -44,7 +46,13 @@ To enable live price lookups, add a `.env.local` in `stock_decks_client`:
 TWELVEDATA_API_KEY=your_api_key_here
 ```
 
-(Get a free key at twelvedata.com. The app runs fine without it — price lookups just won't resolve.)
+## Next Steps
+
+1. Move client-side local storage to server with an account system
+2. Expand test suite
+3. Convert into mobile app layout
+
+(Get a free key at twelvedata.com. The app runs fine without it but cards will show a value of $0)
 
 ## Author
 
