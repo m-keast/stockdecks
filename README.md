@@ -1,4 +1,4 @@
-##StockDecks
+## StockDecks
 
 Welcome to StockDecks, A sandbox stock trading pack opening game. Buy and open packs to
 build a deck of real companies. Each card is an actual stock with company info and current prices.
