@@ -13,7 +13,7 @@ Track your portfolio's equity and cash balance, and sell stock cards for money t
 - **Frontend:** Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, Framer Motion
 - **Backend:** Node + Express (TypeScript) for stock data endpoints
 - **Data:** Public datasets, web-scraped Python built CSVs, and stock price APIs
-- **Tooling:** GitHub Actions CI (lint + build)
+- **Tooling:** GitHub Actions CI (lint, build, tests), Vitest (unit), Playwright (end-to-end)
 
 ## Project structure
 
