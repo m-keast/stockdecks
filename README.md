@@ -28,7 +28,7 @@ stockdecks/
 
 ## Getting started
 
-**Prerequisites:** Node 20+ and npm.
+**Prerequisites:** Node 24+ and npm.
 
 ```bash
 cd stock_decks_client
