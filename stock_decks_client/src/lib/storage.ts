@@ -1,7 +1,7 @@
 // src/lib/storage.ts
 //Handles loading and saving cards and packs to localStorage
 
-import { UnopenedPack } from '@/components/packs';
+import type { UnopenedPack } from '@/components/packs';
 import { Card } from '../lib/definitions';
 
 const STORAGE_KEY = 'userCards';
