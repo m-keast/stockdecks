@@ -52,7 +52,7 @@ jobs:
           cache: npm
           cache-dependency-path: stock_decks_client/package-lock.json
       - run: npm ci
-      - run: npx playwright install --with-deps    # browsers + OS libs
+      - run: npx playwright install --with-deps chromium   # browsers + OS libs
       - run: npx playwright test                    # webServer boots the app
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
