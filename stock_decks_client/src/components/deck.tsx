@@ -81,59 +81,53 @@ function SectorGroup({
         <span className="text-sm font-normal text-gray-400">({cards.length})</span>
       </button>
 
-      <AnimatePresence initial={false} mode="wait">
-        {collapsed ? (
-          <motion.div
-            key="stack"
-            className="flex flex-wrap gap-4 relative cursor-pointer"
-            style={{ height: 292 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onMouseEnter={() => setStackHovered(true)}
-            onMouseLeave={() => setStackHovered(false)}
-            onClick={(e) =>{
-              e.stopPropagation();
-              setStackHovered(false);
-              setCollapsed(false);
-            }}
-          >
-            {cards.slice(0, STACK_COUNT).map((card, i) => (
-              <motion.div
-                key={card.id}
-                className="absolute pointer-events-none"
-                style={{ transformOrigin: 'bottom center', zIndex: STACK_COUNT - i }}
-                animate={{ x: deckStackX(i, stackHovered) }}
-                transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-              >
-                <CardComponent
-                  card={card}
-                  onClick={() => handleCardClick(card)}
-                  style={getCardStyle(card)}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
-        ) : (
-          <motion.div
-            key="expanded"
-            className="flex flex-wrap gap-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {cards.map((card) => (
-              <motion.div key={card.id} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <CardComponent
-                  card={card}
-                  onClick={() => handleCardClick(card)}
-                  style={getCardStyle(card)}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+      {collapsed ? (
+        <motion.div
+          key="stack"
+          className="flex flex-wrap gap-4 relative cursor-pointer"
+          style={{ height: 292 }}
+          onMouseEnter={() => setStackHovered(true)}
+          onMouseLeave={() => setStackHovered(false)}
+          onClick={(e) =>{
+            e.stopPropagation();
+            setStackHovered(false);
+            setCollapsed(false);
+          }}
+        >
+          {cards.slice(0, STACK_COUNT).map((card, i) => (
+            <motion.div
+              key={card.id}
+              className="absolute pointer-events-none"
+              style={{ transformOrigin: 'bottom center', zIndex: STACK_COUNT - i }}
+              animate={{ x: deckStackX(i, stackHovered) }}
+              transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+            >
+              <CardComponent
+                card={card}
+                onClick={() => handleCardClick(card)}
+                style={getCardStyle(card)}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+      ) : (
+        <motion.div
+          key="expanded"
+          className="flex flex-wrap gap-4"
+        >
+          {cards.map((card) => (
+            <motion.div key={card.id} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <CardComponent
+                card={card}
+                onClick={() => handleCardClick(card)}
+                style={getCardStyle(card)}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
+
     </div>
   );
 }
@@ -168,7 +162,7 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode
   const getCardStyle = (card: CardType): CSSProperties | undefined => {
     if (selectedCard?.id === card.id) return { visibility: 'hidden' };
     if (sellMode && sellIds?.includes(card.id)) {
-      return { filter: 'grayscale(1)', scale: 0.9, opacity: 0.5, transition: 'filter 0.15s ease, opacity 0.15s ease'};
+      return { filter: 'grayscale(1)', scale: 0.95, transition: 'filter 0.15s ease, opacity 0.15s ease'};
     }
     return undefined;
   };
@@ -231,15 +225,12 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode
           ))}
         </div>
       ) : (
-        <AnimatePresence initial={false} mode="wait">
+        <div>
           {collapsed ? (
             <motion.div
               key="stack"
               className="relative mx-8 cursor-pointer"
-              style={{ width: 320, height: 300 }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              style={{ width: 320, height: 300}}
               onMouseEnter={() => setStackHovered(true)}
               onMouseLeave={() => setStackHovered(false)}
               onClick={(e) => {
@@ -268,9 +259,6 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode
             <motion.div
               key="expanded"
               className="flex justify-left w-full"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
             >
               <div
                 className="grid gap-4 px-8 justify-items-center w-full"
@@ -292,7 +280,7 @@ export default function Deck({ sortBy, collapsed, onExpand, openCardId, sellMode
               </div>
             </motion.div>
           )}
-        </AnimatePresence>
+        </div>
       )}
 
       <AnimatePresence>
